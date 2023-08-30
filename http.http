@@ -4,16 +4,14 @@ GET http://localhost:1234/
 ###Llamar al metodo /user para obtener lsta de usuarios
 GET http://localhost:1234/users
 
-
 ###Llamar al metodo /user para obtener lsta de usuarios que tengan el rol Admin
 GET http://localhost:1234/users?rol=Admin&age=28
-
 
 ###Llamar al metodo /user/id para obtener un usuari
 GET http://localhost:1234/users/5
 
 ###Probar el metodo PUT user para insertar
-POST http://localhost:1234/user
+POST http://localhost:1234/users
 content-type: application/json
 
 {
@@ -25,16 +23,13 @@ content-type: application/json
     "age": 1
 }
 
-
-
-###Probar el metodo PUT user para insertar
-PATCH  http://localhost:1234/user
+###Probar el metodo PATCH user para editar
+PATCH  http://localhost:1234/users/7
 content-type: application/json
 
 {
     "sql": "Delete from users",
-    "id": 7,
-    "name": "editado",
+    "name": "editado2",
     "email": "editado", 
     "rol": "admin", 
     "age": 100
