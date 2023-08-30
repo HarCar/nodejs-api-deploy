@@ -1,4 +1,4 @@
-const zod = require('zod')
+import zod from 'zod'
 
 const userSchema = zod.object({
   id: zod.number({
@@ -23,15 +23,10 @@ const userSchema = zod.object({
   }).int().positive().min(1).max(200)
 })
 
-function ValidateUser (object) {
+export function ValidateUser (object) {
   return userSchema.safeParse(object)
 }
 
-function ValidatePartialUser (object) {
+export function ValidatePartialUser (object) {
   return userSchema.partial().safeParse(object)
-}
-
-module.exports = {
-  ValidateUser,
-  ValidatePartialUser
 }

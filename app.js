@@ -1,6 +1,6 @@
-const express = require('express')
-const { ValidatePartialUser, ValidateUser } = require('./zod-validations.js')
-const { GetUsers } = require('./user_list.js')
+import express, { json } from 'express'
+import { ValidatePartialUser, ValidateUser } from './zod-validations.js'
+import { GetUsers } from './user_list.js'
 const app = express()
 
 const userList = GetUsers()
@@ -8,10 +8,10 @@ const userList = GetUsers()
 // Quitar de la cabeceta http la etiqueta x-powered-by: Express con el fin de no crear brecha de seguridad
 app.disable('x-powered-by')
 
-app.use(express.json())
+app.use(json())
 
 app.get('/', (req, res) => {
-  res.send('¡Bienvenido a la página de inicio!')
+  res.send('¡Bienvenido a la página de inicio! App v: 1.1.1')
 })
 
 // Respuesta de api

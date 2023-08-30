@@ -1,19 +1,19 @@
 ###Probar el metodo GET /
-GET http://localhost:3000/
+GET http://localhost:1234/
 
 ###Llamar al metodo /user para obtener lsta de usuarios
 GET http://localhost:1234/users
 
 
 ###Llamar al metodo /user para obtener lsta de usuarios que tengan el rol Admin
-GET http://localhost:3000/users?rol=Admin&age=28
+GET http://localhost:1234/users?rol=Admin&age=28
 
 
 ###Llamar al metodo /user/id para obtener un usuari
-GET http://localhost:3000/users/5
+GET http://localhost:1234/users/5
 
 ###Probar el metodo PUT user para insertar
-POST http://localhost:3000/user
+POST http://localhost:1234/user
 content-type: application/json
 
 {
@@ -28,7 +28,7 @@ content-type: application/json
 
 
 ###Probar el metodo PUT user para insertar
-PATCH  http://localhost:3000/user
+PATCH  http://localhost:1234/user
 content-type: application/json
 
 {
