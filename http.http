@@ -2,35 +2,84 @@
 GET http://localhost:1234/
 
 ###Llamar al metodo /user para obtener lsta de usuarios
-GET http://localhost:1234/users
+GET http://localhost:1234/api/users
 
 ###Llamar al metodo /user para obtener lsta de usuarios que tengan el rol Admin
-GET http://localhost:1234/users?rol=Admin&age=28
+GET http://localhost:1234/api/users?rol=Admin&age=28
 
 ###Llamar al metodo /user/id para obtener un usuari
-GET http://localhost:1234/users/5
+GET http://localhost:1234/api/users/64efbbba501459b395f49513
 
 ###Probar el metodo PUT user para insertar
-POST http://localhost:1234/users
+POST http://localhost:1234/api/users
 content-type: application/json
-
-{
-    "sql": "Delete from users",
-    "id": 9,
-    "name": "Otro nombre",
-    "email": "ana@example.com", 
-    "rol": "admin", 
-    "age": 1
-}
+ [
+    {
+      "name": "Ana García",
+      "email": "ana@example.com",
+      "rol": "Admin",
+      "age": 30
+    },
+    {
+      "name": "Ana García",
+      "email": "ana@example.com",
+      "rol": "Admin",
+      "age": 30
+    },
+    {
+      "name": "Carlos Rodríguez",
+      "email": "carlos@example.com",
+      "rol": "Usuario",
+      "age": 25
+    },
+    {
+      "name": "María López",
+      "email": "maria@example.com",
+      "rol": "Admin",
+      "age": 28
+    },
+    {
+      "name": "Juan Pérez",
+      "email": "juan@example.com",
+      "rol": "Usuario",
+      "age": 22
+    },
+    {
+      "name": "editado2",
+      "email": "editado",
+      "rol": "Admin",
+      "age": 100
+    },
+    {
+      "name": "Luisa Fernández",
+      "email": "luisa@example.com",
+      "rol": "Admin",
+      "age": 31
+    },
+    {
+      "name": "Elena Martínez",
+      "email": "elena@example.com",
+      "rol": "Editor",
+      "age": 35
+    },
+    {
+      "name": "elena",
+      "email": "elena@example.com",
+      "rol": "Editor",
+      "age": 35
+    }
+  ]
 
 ###Probar el metodo PATCH user para editar
-PATCH  http://localhost:1234/users/7
+PATCH  http://localhost:1234/api/users/64efc01ed9c16258ce3661e9
 content-type: application/json
 
 {
-    "sql": "Delete from users",
-    "name": "editado2",
-    "email": "editado", 
-    "rol": "admin", 
-    "age": 100
+      "name": "editado2",
+      "email": "editado",
+      "rol": "Admin",
+      "age": 100
 }
+
+###Probar el metodo DELETE user para borrar
+DELETE http://localhost:1234/api/users/64efbbba501459b395f49513

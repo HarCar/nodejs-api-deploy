@@ -9,17 +9,24 @@ app.disable('x-powered-by')
 app.use(json())
 
 app.get('/', (req, res) => {
-  res.send('¡Bienvenido a la página de inicio! App v: 1.1.2')
+  res.send('¡Bienvenido a la página de inicio! App v: 1.1.3')
 })
+// #region API
+
+// #region  Users
 
 // Para evitar error CORS en put, delete .. etc
-app.options('/users', (req, res) => {
+app.options('api/users', (req, res) => {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE')
   res.send(200)
 })
 
-app.use('/users', usersRouter)
+app.use('/api/users', usersRouter)
+
+// #endregion
+
+// #endregion
 
 // Si la url no es captura por ninguno de los metos anteriores llegaria a este metodo que captura todo
 app.use((req, res) => {
