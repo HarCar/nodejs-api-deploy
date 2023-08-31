@@ -61,8 +61,8 @@ export const Contex = {
     add: async ({ record }) => {
       return await add({ record, collecition: Contex.Users.collectionName })
     },
-    update: async ({ id, record }) => {
-      return await update({ id, record, collecition: Contex.Users.collectionName })
+    update: async ({ id, objet }) => {
+      return await update({ id, record: objet, collecition: Contex.Users.collectionName })
     },
     deleteOne: async ({ id }) => {
       return await deleteOne({ id, collecition: Contex.Users.collectionName })

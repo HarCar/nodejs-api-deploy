@@ -46,7 +46,7 @@ export const UserModel = {
       const result = UserModel.Validate(objet)
       if (result.error) { throw new Error(result.error.message) }
 
-      const insertResult = await Contex.Users.add({ objet: result.data })
+      const insertResult = await Contex.Users.add({ record: result.data })
 
       return { data: result.data, insertResult }
     } catch (error) {

@@ -46,7 +46,7 @@ export class UserController {
   static async patch (req, res) {
     const { id } = req.params
 
-    const result = await UserModel.update({ id, record: req.body })
+    const result = await UserModel.update({ id, objet: req.body })
     if (result.error) {
       const message = result.message
       return res.status(400).json({

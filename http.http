@@ -8,70 +8,21 @@ GET http://localhost:1234/api/users
 GET http://localhost:1234/api/users?rol=Admin&age=28
 
 ###Llamar al metodo /user/id para obtener un usuari
-GET http://localhost:1234/api/users/64efbbba501459b395f49513
+GET http://localhost:1234/api/users/64f0eaa81f8b53690a62c387
 
 ###Probar el metodo PUT user para insertar
 POST http://localhost:1234/api/users
 content-type: application/json
- [
-    {
-      "name": "Ana García",
-      "email": "ana@example.com",
-      "rol": "Admin",
-      "age": 30
-    },
-    {
-      "name": "Ana García",
-      "email": "ana@example.com",
-      "rol": "Admin",
-      "age": 30
-    },
-    {
-      "name": "Carlos Rodríguez",
-      "email": "carlos@example.com",
-      "rol": "Usuario",
-      "age": 25
-    },
-    {
-      "name": "María López",
-      "email": "maria@example.com",
-      "rol": "Admin",
-      "age": 28
-    },
-    {
-      "name": "Juan Pérez",
-      "email": "juan@example.com",
-      "rol": "Usuario",
-      "age": 22
-    },
-    {
-      "name": "editado2",
-      "email": "editado",
-      "rol": "Admin",
-      "age": 100
-    },
-    {
-      "name": "Luisa Fernández",
-      "email": "luisa@example.com",
-      "rol": "Admin",
-      "age": 31
-    },
-    {
-      "name": "Elena Martínez",
-      "email": "elena@example.com",
-      "rol": "Editor",
-      "age": 35
-    },
-    {
-      "name": "elena",
-      "email": "elena@example.com",
-      "rol": "Editor",
-      "age": 35
-    }
-  ]
+
+{
+  "name": "Ana García",
+  "email": "ana@example.com",
+  "rol": "Admin",
+  "age": 30
+}
 
 ###Probar el metodo PATCH user para editar
-PATCH  http://localhost:1234/api/users/64efc01ed9c16258ce3661e9
+PATCH  http://localhost:1234/api/users/64f0eaa81f8b53690a62c38c
 content-type: application/json
 
 {
@@ -82,4 +33,4 @@ content-type: application/json
 }
 
 ###Probar el metodo DELETE user para borrar
-DELETE http://localhost:1234/api/users/64efbbba501459b395f49513
+DELETE http://localhost:1234/api/users/64f0eaa81f8b53690a62c38c
