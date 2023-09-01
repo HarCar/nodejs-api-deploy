@@ -24,7 +24,7 @@ export const UserModel = {
     if (age) {
       dataFilter = dataFilter.filter(user => user.age === parseInt(age))
     }
-
+    // throw new Error('result.error.message')
     return dataFilter
   },
   find: async function ({ id }) {

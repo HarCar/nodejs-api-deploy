@@ -12,3 +12,6 @@ usersRouter.post('/', UserController.post)
 usersRouter.patch('/:id', UserController.patch)
 
 usersRouter.delete('/:id', UserController.delete)
+
+usersRouter.get('/error', (req, res) => { throw new Error('error handling') })
+usersRouter.post('/error', (req, res) => { throw new Error('error handling') })
