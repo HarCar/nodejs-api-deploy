@@ -51,3 +51,26 @@ POST http://localhost:1234/api/error
 ###Prueba de manejo de errores
 GET  http://localhost:1234/api/users/error
 
+
+###Licenses GET
+
+GET http://localhost:1234/api/licenses
+
+###Licenses POST
+POST http://localhost:1234/api/licenses
+content-type: application/json
+
+[
+  {
+    "name": "001278Xc",
+    "email": "ana@example.com",
+    "rol": "Admin",
+    "age": 30
+  },
+  {
+    "name": "001278XB",
+    "email": "ana@example.com",
+    "rol": "Admin",
+    "age": 30
+  }
+]

@@ -1,5 +1,7 @@
 import express, { json } from 'express'
 import { usersRouter } from './routes/usersRoutes.js'
+import { licensesRouter } from './routes/licensesRoutes.js'
+
 import { ErrorHandler, ResourceNotFound } from './middleware/apiMiddleware.js'
 
 const app = express()
@@ -26,10 +28,23 @@ app.options('api/users', (req, res) => {
 
 app.use('/api/users', usersRouter)
 
-usersRouter.get('api/error', (req, res) => { throw new Error('error handling') })
-usersRouter.post('api/error', (req, res) => { throw new Error('error handling') })
+// #endregion
+
+// #region  Licenses
+
+// Para evitar error CORS en put, delete .. etc
+app.options('api/licenses', (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*')// Todo manejar por dominio para no permitir de todo lado
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE')
+  res.send(200)
+})
+
+app.use('/api/licenses', licensesRouter)
 
 // #endregion
+
+usersRouter.get('api/error', (req, res) => { throw new Error('error handling') })
+usersRouter.post('api/error', (req, res) => { throw new Error('error handling') })
 
 // Si la url no es captura por ninguno de los metos anteriores llegaria a este metodo que captura todo
 app.use(ResourceNotFound)
