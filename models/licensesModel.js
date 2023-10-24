@@ -27,6 +27,9 @@ export const licensesModel = {
   find: async function ({ id }) {
     return await Contex.Licenses.find({ id })
   },
+  findByName: async function ({ name }) {
+    return await Contex.Licenses.findByName({ name })
+  },
   insert: async function ({ objet }) {
     try {
       if (Array.isArray(objet)) {

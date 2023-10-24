@@ -32,6 +32,21 @@ export class LicensesController {
     }
   }
 
+  static async findByName (req, res, next) {
+    try {
+      const { name } = req.params
+      const data = await licensesModel.findByName({ name })
+
+      res.json({
+        success: true,
+        message: data === null ? `No se encontro registro con nombre = ${name}` : null,
+        data
+      })
+    } catch (error) {
+      next(error)
+    }
+  }
+
   static async post (req, res, next) {
     try {
       const result = await licensesModel.insert({ objet: req.body })

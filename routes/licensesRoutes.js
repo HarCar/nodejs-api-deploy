@@ -7,6 +7,8 @@ licensesRouter.get('/', LicensesController.get)
 
 licensesRouter.get('/:id', LicensesController.find)
 
+licensesRouter.get('/name/:name', LicensesController.findByName)
+
 licensesRouter.post('/', LicensesController.post)
 
 licensesRouter.patch('/:id', LicensesController.patch)

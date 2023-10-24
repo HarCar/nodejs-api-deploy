@@ -59,6 +59,9 @@ GET http://localhost:1234/api/licenses
 ###Licenses Find
 GET http://localhost:1234/api/licenses/65383b989244c7f4a6d2af67
 
+###Licenses Find By Name
+GET http://localhost:1234/api/licenses/name/001278XB
+
 ###Licenses POST
 POST http://localhost:1234/api/licenses
 content-type: application/json

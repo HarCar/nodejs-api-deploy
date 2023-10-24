@@ -24,6 +24,12 @@ async function find ({ id, collecition }) {
   return data
 }
 
+async function findByName ({ name, collecition }) {
+  const collection = await getCollection(collecition)
+  const data = await collection.findOne({ name })
+  return data
+}
+
 async function addRange ({ records, collecition }) {
   const collection = await getCollection(collecition)
   return await collection.insertMany(records)
@@ -75,6 +81,9 @@ export const Contex = {
     },
     find: async ({ id }) => {
       return await find({ id, collecition: Contex.Licenses.collectionName })
+    },
+    findByName: async ({ name }) => {
+      return await findByName({ name, collecition: Contex.Licenses.collectionName })
     },
     addRange: async ({ records }) => {
       return await addRange({ records, collecition: Contex.Licenses.collectionName })
