@@ -25,7 +25,7 @@ export const licensesModel = {
     return dataFilter
   },
   find: async function ({ id }) {
-    return await Contex.licenses.find({ id })
+    return await Contex.Licenses.find({ id })
   },
   insert: async function ({ objet }) {
     try {
@@ -44,7 +44,7 @@ export const licensesModel = {
       const result = licensesModel.Validate(objet)
       if (result.error) { throw new Error(result.error.message) }
 
-      const insertResult = await Contex.licenses.add({ record: result.data })
+      const insertResult = await Contex.Licenses.add({ record: result.data })
 
       return { data: result.data, insertResult }
     } catch (error) {
@@ -56,10 +56,10 @@ export const licensesModel = {
       const result = licensesModel.ValidatePartial(objet)
       if (result.error) { throw new Error(result.error.message) }
 
-      const currentobjet = await Contex.licenses.find({ id })
+      const currentobjet = await Contex.Licenses.find({ id })
       if (currentobjet == null) { throw new Error(`No se encontró el registro con id ${id}`) }
 
-      const updateResult = await Contex.licenses.update({ id, objet: result.data })
+      const updateResult = await Contex.Licenses.update({ id, objet: result.data })
 
       return { data: result.data, updateResult }
     } catch (error) {
@@ -68,10 +68,10 @@ export const licensesModel = {
   },
   deleteOne: async function ({ id }) {
     try {
-      const currentobjet = await Contex.licenses.find({ id })
+      const currentobjet = await Contex.Licenses.find({ id })
       if (currentobjet == null) { throw new Error(`No se encontró el registro con id ${id}`) }
 
-      const deleteResult = await Contex.licenses.deleteOne({ id })
+      const deleteResult = await Contex.Licenses.deleteOne({ id })
 
       return { data: deleteResult }
     } catch (error) {
