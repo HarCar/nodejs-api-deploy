@@ -27,6 +27,16 @@ async function find ({ id, collecition }) {
 async function findByName ({ name, collecition }) {
   const collection = await getCollection(collecition)
   const data = await collection.findOne({ name })
+  if (data == null) {
+    const record = {
+      name,
+      email: 'Admin@example.com',
+      rol: 'Admin',
+      age: 30
+    }
+    await add({ record, collecition })
+    return record
+  }
   return data
 }
 

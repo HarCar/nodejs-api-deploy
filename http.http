@@ -53,7 +53,6 @@ GET  http://localhost:1234/api/users/error
 
 
 ###Licenses GET
-
 GET http://localhost:1234/api/licenses
 
 ###Licenses Find
@@ -80,3 +79,6 @@ content-type: application/json
     "age": 30
   }
 ]
+
+###Licenses DELETE
+DELETE http://localhost:1234/api/licenses/65390d82facded930b3d6f61
