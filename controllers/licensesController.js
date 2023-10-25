@@ -39,7 +39,8 @@ export class LicensesController {
 
       res.json({
         success: true,
-        message: data === null ? `No se encontro registro con nombre = ${name}` : null,
+        // message: data === null ? `No se encontro registro con nombre = ${name}` : null,
+        message: data === null ? '*** La licencia ha expirado.***' : null,
         found: data !== null,
         data
       })
