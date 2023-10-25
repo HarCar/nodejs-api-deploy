@@ -40,6 +40,7 @@ export class LicensesController {
       res.json({
         success: true,
         message: data === null ? `No se encontro registro con nombre = ${name}` : null,
+        found: data !== null,
         data
       })
     } catch (error) {
