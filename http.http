@@ -76,7 +76,7 @@ content-type: application/json
     "name": "001278XB",
     "email": "ana@example.com",
     "rol": "Admin",
-    "age": 30
+    "age": 31
   }
 ]
 
