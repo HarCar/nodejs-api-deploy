@@ -1,30 +1,31 @@
 import { MongoClient, ObjectId } from 'mongodb'
 
-const uri = process.env.URLDB ?? 'mongodb://127.0.0.1:27017'
+const uri = process.env.URLDB ?? 'mongodb+srv://harvycardoza:Gy3hsDPKwxlO9dNz@development.dspmilv.mongodb.net/?retryWrites=true&w=majority'
+
 const client = new MongoClient(uri)
 
 // Crear un pool de conexiones
 const connectionPromise = client.connect()
 
-async function getCollection (collecition) {
+async function getCollection(collecition) {
   const client = await connectionPromise
   const database = client.db('isav')
   return database.collection(collecition)
 }
-async function get ({ collecition }) {
+async function get({ collecition }) {
   const collection = await getCollection(collecition)
   const data = await collection.find({}).toArray()
   return data
 }
 
-async function find ({ id, collecition }) {
+async function find({ id, collecition }) {
   const collection = await getCollection(collecition)
   const _id = new ObjectId(id)
   const data = await collection.findOne({ _id })
   return data
 }
 
-async function findByName ({ name, collecition }) {
+async function findByName({ name, collecition }) {
   const collection = await getCollection(collecition)
   const data = await collection.findOne({ name })
   if (data == null) {
@@ -40,23 +41,23 @@ async function findByName ({ name, collecition }) {
   return data
 }
 
-async function addRange ({ records, collecition }) {
+async function addRange({ records, collecition }) {
   const collection = await getCollection(collecition)
   return await collection.insertMany(records)
 }
 
-async function add ({ record, collecition }) {
+async function add({ record, collecition }) {
   const collection = await getCollection(collecition)
   return await collection.insertOne(record)
 }
 
-async function update ({ id, record, collecition }) {
+async function update({ id, record, collecition }) {
   const collection = await getCollection(collecition)
   const _id = new ObjectId(id)
   return await collection.updateOne({ _id }, { $set: record })
 }
 
-async function deleteOne ({ id, collecition }) {
+async function deleteOne({ id, collecition }) {
   const collection = await getCollection(collecition)
   const _id = new ObjectId(id)
   return await collection.deleteOne({ _id })
