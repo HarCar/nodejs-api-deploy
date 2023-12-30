@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
 // #region API
 
 app.get('/api', (req, res) => {
-  res.send('¡Bienvenido a la página de inicio! API v: 1.1.9')
+  res.send('¡Bienvenido a la página de inicio! API v: 1.1.10')
 })
 
 // #region API FIN
