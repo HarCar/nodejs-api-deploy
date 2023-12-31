@@ -1,10 +1,19 @@
 import express, { json } from 'express'
 import { usersRouter } from './routes/usersRoutes.js'
 import { licensesRouter } from './routes/licensesRoutes.js'
+import { authenticationRouters } from './routes/security/authenticationRouters.js'
 import { ErrorHandler, ResourceNotFound } from './middleware/apiMiddleware.js'
 import path from 'path'
+import acceptLanguage from 'accept-language-parser'
 
 const app = express()
+
+// Detectar idioma
+app.use((req, res, next) => {
+  const lang = acceptLanguage.parse(req.headers['accept-language'])[0]
+  req.language = lang
+  next()
+})
 
 // Quitar de la cabeceta http la etiqueta x-powered-by: Express con el fin de no crear brecha de seguridad
 app.disable('x-powered-by')
@@ -13,6 +22,7 @@ app.use(json())
 
 // Servir archivos estáticos desde la carpeta 'build/dist' de React
 app.use(express.static(path.join(path.resolve(), 'views', 'dist')))
+app.use(express.static(path.join(path.resolve(), 'views', 'security', 'authentications')))
 
 // La ruta / retorna el HTML generado con react
 app.get('/', (req, res) => {
@@ -24,6 +34,9 @@ app.get('/', (req, res) => {
 app.get('/api', (req, res) => {
   res.send('¡Bienvenido a la página de inicio! API v: 1.1.10')
 })
+
+// secutity
+app.use('/secutity', authenticationRouters)
 
 // #region API FIN
 
