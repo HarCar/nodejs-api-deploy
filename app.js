@@ -36,7 +36,7 @@ app.get('/api', (req, res) => {
 })
 
 // secutity
-app.use('/secutity', authenticationRouters)
+app.use('/security', authenticationRouters)
 
 // #region API FIN
 
