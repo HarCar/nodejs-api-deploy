@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { LicensesController } from '../controllers/LicensesController.js'
+import { LicensesController } from '../controllers/LicensesControllerTest.js'
 
 export const licensesRouter = Router()
 
