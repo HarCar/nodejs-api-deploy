@@ -1,0 +1,9 @@
+{
+    "caption": "Autenticación",
+    "verification_sent_to": "Se envió una verificación al correo electrónico \"{0}\" para activar la cuenta.",
+    "email_or_password_incorrect": "El correo electrónico o la contraseña son incorrectos.",
+    "email_already_in_use": "Correo electrónico ya en uso",
+    "password_reset_email_sent": "Se ha enviado un correo electrónico de restablecimiento de contraseña.",
+    "email_not_registered": "El correo electrónico no está registrado en la base de datos de autenticación.",
+    "logout_error": "Logout error:"
+}

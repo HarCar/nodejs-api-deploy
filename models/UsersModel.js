@@ -1,11 +1,11 @@
 import zod from 'zod'
-import { Contex } from './Context.js'
+import { Context } from './Context.js'
 
 // const userList = GetUsers()
 
 export const UserModel = {
   get: async function ({ name, email, rol, age }) {
-    const userList = await Contex.Users.get()
+    const userList = await Context.Users.get()
 
     let dataFilter = userList
 
@@ -28,7 +28,7 @@ export const UserModel = {
     return dataFilter
   },
   find: async function ({ id }) {
-    return await Contex.Users.find({ id })
+    return await Context.Users.find({ id })
   },
   insert: async function ({ objet }) {
     try {
@@ -39,14 +39,14 @@ export const UserModel = {
           if (result.error) { throw new Error(result.error.message) }
           records.push(result.data)
         })
-        const insertResult = await Contex.Users.addRange({ records })
+        const insertResult = await Context.Users.addRange({ records })
         return { data: records, insertResult }
       }
 
       const result = UserModel.Validate(objet)
       if (result.error) { throw new Error(result.error.message) }
 
-      const insertResult = await Contex.Users.add({ record: result.data })
+      const insertResult = await Context.Users.add({ record: result.data })
 
       return { data: result.data, insertResult }
     } catch (error) {
@@ -58,10 +58,10 @@ export const UserModel = {
       const result = UserModel.ValidatePartial(objet)
       if (result.error) { throw new Error(result.error.message) }
 
-      const currentobjet = await Contex.Users.find({ id })
+      const currentobjet = await Context.Users.find({ id })
       if (currentobjet == null) { throw new Error(`No se encontró el registro con id ${id}`) }
 
-      const updateResult = await Contex.Users.update({ id, objet: result.data })
+      const updateResult = await Context.Users.update({ id, objet: result.data })
 
       return { data: result.data, updateResult }
     } catch (error) {
@@ -70,10 +70,10 @@ export const UserModel = {
   },
   deleteOne: async function ({ id }) {
     try {
-      const currentobjet = await Contex.Users.find({ id })
+      const currentobjet = await Context.Users.find({ id })
       if (currentobjet == null) { throw new Error(`No se encontró el registro con id ${id}`) }
 
-      const deleteResult = await Contex.Users.deleteOne({ id })
+      const deleteResult = await Context.Users.deleteOne({ id })
 
       return { data: deleteResult }
     } catch (error) {

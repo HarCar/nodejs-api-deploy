@@ -1,12 +1,16 @@
-import { licensesModel } from '../models/licensesModel.js'
+import { LicensesRepository } from '../repositories/LicensesRepository.js'
 
 export class LicensesController {
   static async get (req, res, next) {
+    const context = req.context.db('IsavConfig')
+    const languageCode = req.language !== undefined && req.language.code === 'en' ? 'en' : 'es'
+    const repository = new LicensesRepository({ context, languageCode })
+
     try {
       res.header('Access-Control-Allow-Origin', '*')
       const { rol, age } = req.query
 
-      const data = await licensesModel.get({ name: null, email: null, rol, age })
+      const data = await repository.get({ rol, age })
       res.json({
         success: true,
         message: null,
@@ -17,10 +21,29 @@ export class LicensesController {
     }
   }
 
+  static async userDelete (req, res, next) {
+    const context = req.context.db('IsavConfig')
+    const { id } = req.query
+    const collection = context.collection('user')
+    await collection.insertOne({ ID: id })
+
+    console.log(id)
+
+    res.json({
+      success: true,
+      message: '',
+      data: id
+    })
+  }
+
   static async find (req, res, next) {
+    const context = req.context.db('IsavConfig')
+    const languageCode = req.language !== undefined && req.language.code === 'en' ? 'en' : 'es'
+    const repository = new LicensesRepository({ context, languageCode })
+
     try {
       const { id } = req.params
-      const data = await licensesModel.find({ id })
+      const data = await repository.find({ id })
 
       res.json({
         success: true,
@@ -33,9 +56,13 @@ export class LicensesController {
   }
 
   static async findByName (req, res, next) {
+    const context = req.context.db('IsavConfig')
+    const languageCode = req.language !== undefined && req.language.code === 'en' ? 'en' : 'es'
+    const repository = new LicensesRepository({ context, languageCode })
+
     try {
       const { name } = req.params
-      const data = await licensesModel.findByName({ name })
+      const data = await repository.findByName({ name })
 
       res.json({
         success: true,
@@ -50,18 +77,13 @@ export class LicensesController {
   }
 
   static async post (req, res, next) {
+    const context = req.context.db('IsavConfig')
+    const languageCode = req.language !== undefined && req.language.code === 'en' ? 'en' : 'es'
+    const repository = new LicensesRepository({ context, languageCode })
+    console.log(req.body)
     try {
-      const result = await licensesModel.insert({ objet: req.body })
-      if (result.error) {
-        const message = result.message
-        return res.status(400).json({
-          success: false,
-          message,
-          data: null
-        })
-      }
-
-      const data = result.data
+      const result = await repository.insert({ objet: req.body })
+      const data = result.insertedId
       res.json({
         success: true,
         message: 'Registro gurdado',
@@ -73,24 +95,19 @@ export class LicensesController {
   }
 
   static async patch (req, res, next) {
+    const context = req.context.db('IsavConfig')
+    const languageCode = req.language !== undefined && req.language.code === 'en' ? 'en' : 'es'
+    const repository = new LicensesRepository({ context, languageCode })
+
     try {
       const { id } = req.params
 
-      const result = await licensesModel.update({ id, objet: req.body })
-      if (result.error) {
-        const message = result.message
-        return res.status(400).json({
-          success: false,
-          message,
-          data: null
-        })
-      }
+      const result = await repository.update({ id, objet: req.body })
 
-      const data = result.data
       res.json({
         success: true,
-        message: 'Registro gurdado',
-        data
+        message: result.modifiedCount > 0 ? 'Registro gurdado' : '',
+        modifiedCount: result.modifiedCount
       })
     } catch (error) {
       next(error)
@@ -98,24 +115,18 @@ export class LicensesController {
   }
 
   static async delete (req, res, next) {
+    const context = req.context.db('IsavConfig')
+    const languageCode = req.language !== undefined && req.language.code === 'en' ? 'en' : 'es'
+    const repository = new LicensesRepository({ context, languageCode })
+
     try {
       const { id } = req.params
+      const result = await repository.delete({ id })
 
-      const result = await licensesModel.deleteOne({ id })
-      if (result.error) {
-        const message = result.message
-        return res.status(400).json({
-          success: false,
-          message,
-          data: null
-        })
-      }
-
-      const data = result.data
       res.json({
         success: true,
-        message: 'Registro borrado',
-        data
+        message: result.deletedCount > 0 ? 'Registro borrado' : '',
+        deletedCount: result.deletedCount
       })
     } catch (error) {
       next(error)

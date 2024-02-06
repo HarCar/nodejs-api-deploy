@@ -1,0 +1,9 @@
+{
+    "caption": "Nombre",
+    "required": "El nombre es requerido",
+    "invalid": "EL nombre es invalido",
+    "not_found": "El nombre \"{0}\" no se encontró",
+    "in_use": "Nombre \"{0}\" ya está en uso",
+    "min": "El nombre debe tener al menos 3 caracteres",
+    "max": "El nombre no puede tener más de 50 caracteres"
+}

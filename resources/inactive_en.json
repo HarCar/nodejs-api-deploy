@@ -1,0 +1,9 @@
+{
+    "caption": "Inactive",
+    "required": "Inactive is required",
+    "invalid": "The Inactive is invalid",
+    "not_found": "Inactive \"{0}\" not found",
+    "in_use": "Inactive \"{0}\" is already in use",
+    "min": "The Inactive must be at least 1.",
+    "max": "Inactive cannot be more than 200"
+}

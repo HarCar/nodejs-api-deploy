@@ -55,6 +55,10 @@ GET  http://localhost:1234/api/users/error
 ###Licenses GET
 GET http://localhost:1234/api/licenses
 
+
+###TEMP 
+GET http://localhost:1234/api/licenses/userDelete?id=iausijnknakshkui9
+
 ###Licenses Find
 GET http://localhost:1234/api/licenses/65383b989244c7f4a6d2af67
 
@@ -65,20 +69,22 @@ GET http://localhost:1234/api/licenses/name/001278Xcx
 POST http://localhost:1234/api/licenses
 content-type: application/json
 
-[
-  {
+{
     "name": "001278Xc",
     "email": "ana@example.com",
     "rol": "Admin",
     "age": 30
-  },
-  {
-    "name": "001278XB",
-    "email": "ana@example.com",
-    "rol": "Admin",
-    "age": 31
-  }
-]
+}
+
+###Probar el metodo PATCH user para editar
+PATCH  http://localhost:1234/api/licenses/65aa6a584d08b71d6326f182
+content-type: application/json
+
+{
+      "email": "editado@gmail.com",
+      "rol": "Admin",
+      "age": 55
+}
 
 ###Licenses DELETE
-DELETE http://localhost:1234/api/licenses/65390d82facded930b3d6f61
+DELETE http://localhost:1234/api/licenses/65aa6a584d08b71d6326f182

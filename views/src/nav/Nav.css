@@ -1,0 +1,20 @@
+body{
+    background-color: black !important;
+}
+
+button {
+    /* Resetear estilos */
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    overflow: visible;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: inherit;
+    cursor: pointer;
+    display: inline-block;
+
+    outline: none;
+}

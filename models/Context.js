@@ -1,30 +1,68 @@
 import { MongoClient, ObjectId } from 'mongodb'
+import process from 'node:process'
+import session from 'express-session'
+import MongoDBStore from 'express-mongodb-session'
 
 const uri = process.env.URLDB ?? 'mongodb://127.0.0.1:27017'
-const client = new MongoClient(uri)
+const uriSession = uri.replace('?retryWrites=true&w=majority', 'IsavConfig?retryWrites=true&w=majority')
+const client2 = new MongoClient(uri)
+
+export function GetStore () {
+  const MongoDBStoreSession = MongoDBStore(session)
+  return new MongoDBStoreSession({
+    uri: uriSession,
+    collection: 'SessionsData'
+  })
+}
+
+export class Context {
+  constructor () {
+    this.client = new MongoClient(uri)
+    this.connectedDatabase = false
+  }
+
+  async connect () {
+    try {
+      await this.client.connect()
+      this.connectedDatabase = true
+    } catch (error) {
+      console.error('Error al conectar a la base de datos:', error)
+    }
+  }
+
+  async closeConnection () {
+    await this.client.close()
+    this.connectedDatabase = false
+    console.log('Conexión cerrada correctamente')
+  }
+
+  getConnection () {
+    return this.client
+  }
+}
 
 // Crear un pool de conexiones
-const connectionPromise = client.connect()
+const connectionPromise = client2.connect()
 
-async function getCollection (collecition) {
+async function getCollection ({ DatabaseName, collecition }) {
   const client = await connectionPromise
-  const database = client.db('isav')
+  const database = client.db(DatabaseName)
   return database.collection(collecition)
 }
-async function get ({ collecition }) {
+export async function get ({ collecition }) {
   const collection = await getCollection(collecition)
   const data = await collection.find({}).toArray()
   return data
 }
 
-async function find ({ id, collecition }) {
+export async function find ({ id, collecition }) {
   const collection = await getCollection(collecition)
   const _id = new ObjectId(id)
   const data = await collection.findOne({ _id })
   return data
 }
 
-async function findByName ({ name, collecition }) {
+export async function findByName ({ name, collecition }) {
   const collection = await getCollection(collecition)
   const data = await collection.findOne({ name })
   if (data == null) {
@@ -40,72 +78,24 @@ async function findByName ({ name, collecition }) {
   return data
 }
 
-async function addRange ({ records, collecition }) {
+export async function addRange ({ records, collecition }) {
   const collection = await getCollection(collecition)
   return await collection.insertMany(records)
 }
 
-async function add ({ record, collecition }) {
+export async function add ({ record, collecition }) {
   const collection = await getCollection(collecition)
   return await collection.insertOne(record)
 }
 
-async function update ({ id, record, collecition }) {
+export async function update ({ id, record, collecition }) {
   const collection = await getCollection(collecition)
   const _id = new ObjectId(id)
   return await collection.updateOne({ _id }, { $set: record })
 }
 
-async function deleteOne ({ id, collecition }) {
+export async function deleteOne ({ id, collecition }) {
   const collection = await getCollection(collecition)
   const _id = new ObjectId(id)
   return await collection.deleteOne({ _id })
-}
-
-export const Contex = {
-  Users: {
-    collectionName: 'Users',
-    get: async () => {
-      return await get({ collecition: Contex.Users.collectionName })
-    },
-    find: async ({ id }) => {
-      return await find({ id, collecition: Contex.Users.collectionName })
-    },
-    addRange: async ({ records }) => {
-      return await addRange({ records, collecition: Contex.Users.collectionName })
-    },
-    add: async ({ record }) => {
-      return await add({ record, collecition: Contex.Users.collectionName })
-    },
-    update: async ({ id, objet }) => {
-      return await update({ id, record: objet, collecition: Contex.Users.collectionName })
-    },
-    deleteOne: async ({ id }) => {
-      return await deleteOne({ id, collecition: Contex.Users.collectionName })
-    }
-  },
-  Licenses: {
-    collectionName: 'licenses',
-    get: async () => {
-      return await get({ collecition: Contex.Licenses.collectionName })
-    },
-    find: async ({ id }) => {
-      return await find({ id, collecition: Contex.Licenses.collectionName })
-    },
-    findByName: async ({ name }) => {
-      return await findByName({ name, collecition: Contex.Licenses.collectionName })
-    },
-    addRange: async ({ records }) => {
-      return await addRange({ records, collecition: Contex.Licenses.collectionName })
-    },
-    add: async ({ record }) => {
-      return await add({ record, collecition: Contex.Licenses.collectionName })
-    },
-    update: async ({ id, objet }) => {
-      return await update({ id, record: objet, collecition: Contex.Licenses.collectionName })
-    },
-    deleteOne: async ({ id }) => {
-      return await deleteOne({ id, collecition: Contex.Licenses.collectionName })
-    }
-  }
 }

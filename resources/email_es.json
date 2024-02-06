@@ -1,0 +1,7 @@
+{
+    "caption": "Correo electrónico",
+    "required": "El correo electrónico es requerido",
+    "invalid": "EL correo electrónico es invalido",
+    "not_found": "El correo electrónico \"{0}\" no se encontró",
+    "in_use": "Correo electrónico \"{0}\" ya está en uso"
+}
