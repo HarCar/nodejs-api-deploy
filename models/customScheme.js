@@ -23,7 +23,10 @@ export class CustomScheme {
   }
 
   async getRol () {
-    return z.enum(['Admin', 'User'], { message: await getResource({ languageCode: this._languageCode, field: 'rol', text: 'invalid' }) })
+    return z.enum(['Admin', 'User'], {
+      invalid_type_error: await getResource({ languageCode: this._languageCode, field: 'rol', text: 'invalid' }),
+      required_error: await getResource({ languageCode: this._languageCode, field: 'rol', text: 'required' })
+    })
   }
 
   async getAge () {

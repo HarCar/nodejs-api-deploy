@@ -1,6 +1,5 @@
 export const Validate = ({ objet, scheme }) => {
   const result = scheme.safeParse(objet)
-
   if (result.success) {
     return { success: result.success, data: result.data }
   } else {
