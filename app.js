@@ -40,6 +40,7 @@ app.use(json())
 // Servir archivos estáticos desde la carpeta 'build/dist' de React
 app.use(express.static(path.join(path.resolve(), 'views', 'dist')))
 app.use(express.static(path.join(path.resolve(), 'views', 'security', 'authentication')))
+app.use(express.static(path.join(path.resolve(), 'views', 'superRepuestos')))
 app.use(express.static(path.join(path.resolve(), 'views', 'public')))
 
 // const allowedExtensions = ['', '.html', '.js', '.css']
@@ -53,6 +54,11 @@ app.use(express.static(path.join(path.resolve(), 'views', 'public')))
 app.get('/authentication', (req, res) => {
   const languageCode = req.language !== undefined && req.language.code === 'en' ? 'en' : 'es'
   res.sendFile(path.join(path.resolve(), 'views', 'security', 'authentication', 'index_' + languageCode + '.html'))
+})
+
+app.get('/SuperRepuestos', (req, res) => {
+  const languageCode = req.language !== undefined && req.language.code === 'en' ? 'en' : 'es'
+  res.sendFile(path.join(path.resolve(), 'views', 'superRepuestos', 'index_' + languageCode + '.html'))
 })
 
 app.get('/Nav', (req, res) => {
