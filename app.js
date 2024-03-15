@@ -60,6 +60,10 @@ app.get('/SuperRepuestos', (req, res) => {
   const languageCode = req.language !== undefined && req.language.code === 'en' ? 'en' : 'es'
   res.sendFile(path.join(path.resolve(), 'views', 'superRepuestos', 'index_' + languageCode + '.html'))
 })
+app.get('/SuperRepuestos2', (req, res) => {
+  const languageCode = req.language !== undefined && req.language.code === 'en' ? 'en' : 'es'
+  res.sendFile(path.join(path.resolve(), 'views', 'superRepuestos', 'index2_' + languageCode + '.html'))
+})
 
 app.get('/Nav', (req, res) => {
   res.sendFile(path.join(path.resolve(), 'views', 'dist', 'index.html'))
