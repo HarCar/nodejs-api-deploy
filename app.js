@@ -50,6 +50,8 @@ app.use(express.static(path.join(path.resolve(), 'views', 'public')))
 //   }
 //   next()
 // })
+
+
 app.get('/authentication', (req, res) => {
   const languageCode = req.language !== undefined && req.language.code === 'en' ? 'en' : 'es'
   res.sendFile(path.join(path.resolve(), 'views', 'security', 'authentication', 'index_' + languageCode + '.html'))

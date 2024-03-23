@@ -9,13 +9,12 @@ import {Create} from './cards/security/pages/create.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <Nav />
+    {/* <Nav /> */}
     <BrowserRouter>
     <Routes>
       <Route path='/' element={<>Hola Home</>} />
       <Route path='/pages' element={ <Create />} />
-
     </Routes>
     </BrowserRouter>
-  </React.StrictMode>,
+  </React.StrictMode>
 )
