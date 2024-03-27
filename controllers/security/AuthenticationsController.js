@@ -8,8 +8,8 @@ import { BaseController } from '../BaseController.js'
 export class AuthenticationsController {
   static async SignInSignUp (req, res, next) {
     try {
-      const language = req.language.code === 'en' ? '_en' : ''
-      res.sendFile(path.join(path.resolve(), 'views', 'security', 'authentications', 'signInSignUp' + language + '.html'))
+      const language = req.language.code === 'en' ? '_en' : 'es'
+      res.sendFile(path.join(path.resolve(), 'views', 'security', 'authentication', 'index_' + language + '.html'))
     } catch (error) {
       next(error)
     }
