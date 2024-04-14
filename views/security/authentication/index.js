@@ -4,6 +4,7 @@ const container = document.getElementById('container');
 const signIn = document.getElementById('call-sign-in');
 const signUp = document.getElementById('call-sign-up');
 const passwordReset = document.getElementById('passwordReset');
+const controller = 'authentication'
 
 signUpButton.addEventListener('click', () => {
 	container.classList.add("right-panel-active");
@@ -35,7 +36,7 @@ signIn.addEventListener('click', (event) => {
 		body: JSON.stringify(parameters)
 	};
 
-	fetch('security/signIn', opciones)
+	fetch(`${controller}/signIn`, opciones)
     .then(response => {
         return response.json();
     })
@@ -75,7 +76,7 @@ signUp.addEventListener('click', (event) => {
 		body: JSON.stringify(parameters)
 	};
 
-	fetch('security/signUp', opciones)
+	fetch(`${controller}/signUp`, opciones)
     .then(response => {
         return response.json();
     })
@@ -112,7 +113,7 @@ passwordReset.addEventListener('click', (event) => {
 		body: JSON.stringify(parameters)
 	};
 
-	fetch('security/passwordReset', opciones)
+	fetch(`${controller}/passwordReset`, opciones)
     .then(response => {
         return response.json();
     })

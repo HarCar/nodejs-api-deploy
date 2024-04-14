@@ -43,9 +43,9 @@ export default function Nav() {
   const [customers, setCustomers] = useState([]);
 
   useEffect(() => {
-    fetch('/security/get')
+    fetch('/api/products')
       .then(response => response.json())
-      .then(data => setProducts(data));
+      .then(data => setProducts(data.data));
 
     fetch('/api/customers')  // Reemplaza '/api/customers' con tu ruta de servidor
       .then(response => response.json())

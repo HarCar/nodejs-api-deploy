@@ -33,6 +33,10 @@ export class AuthenticationsRepository extends SecurityBaseRepository {
         message = await GetResource({ languageCode: this._LanguageCode, field: 'authentication', text: 'email_or_password_incorrect' })
         error.message = message
         break
+      case 'auth/operation-not-supported-in-this-environment':
+        message = await GetResource({ languageCode: this._LanguageCode, field: 'authentication', text: 'authentication_environment_not_configured' })
+        error.message = message
+        break
     }
   }
 }

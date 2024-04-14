@@ -1,5 +1,8 @@
 import { initializeApp } from 'firebase/app'
-import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, updateProfile, sendPasswordResetEmail, fetchSignInMethodsForEmail } from 'firebase/auth'
+import {
+  getAuth, createUserWithEmailAndPassword, sendEmailVerification,
+  signInWithEmailAndPassword, updateProfile, sendPasswordResetEmail, fetchSignInMethodsForEmail
+} from 'firebase/auth'
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -7,13 +10,13 @@ import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, signInW
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: 'AIzaSyDwq-plzELqkdxiB1P3NPzF8_PvZxeeHuQ',
-  authDomain: 'isav-authentication.firebaseapp.com',
-  projectId: 'isav-authentication',
-  storageBucket: 'isav-authentication.appspot.com',
-  messagingSenderId: '341751603351',
-  appId: '1:341751603351:web:ee59187467ed6c14b3c9d2',
-  measurementId: 'G-0EPWEV1TXJ'
+  apiKey: 'AIzaSyCUvvSh2K8IIlqf_wVMsc-JqRBjxE680Mw',
+  authDomain: 'isav-e597d.firebaseapp.com',
+  projectId: 'isav-e597d',
+  storageBucket: 'isav-e597d.appspot.com',
+  messagingSenderId: '892926121785',
+  appId: '1:892926121785:web:ce325a8bf0f3058237bae8',
+  measurementId: 'G-Y1P49X25SH'
 }
 
 // Initialize Firebase

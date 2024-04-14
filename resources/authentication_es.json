@@ -5,5 +5,6 @@
     "email_already_in_use": "Correo electrónico ya en uso",
     "password_reset_email_sent": "Se ha enviado un correo electrónico de restablecimiento de contraseña.",
     "email_not_registered": "El correo electrónico no está registrado en la base de datos de autenticación.",
-    "logout_error": "Logout error:"
+    "logout_error": "Logout error:",
+    "authentication_environment_not_configured": "entorno de autenticación no configurado"
 }
