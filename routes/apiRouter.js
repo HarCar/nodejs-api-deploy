@@ -11,5 +11,5 @@ apiRouter.patch('/:collection/:id', BaseController.patch)
 apiRouter.delete('/:collection/:id', BaseController.delete)
 
 apiRouter.get('/', (req, res) => {
-  res.send('¡Bienvenido a la página de inicio! API v: 1.1.10')
+  res.send('¡Bienvenido a la página de inicio! API v: 1.1.11')
 })
