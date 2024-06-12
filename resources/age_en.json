@@ -1,9 +1,0 @@
-{
-    "caption": "Age",
-    "required": "Age is required",
-    "invalid": "The Age is invalid",
-    "not_found": "Age \"{0}\" not found",
-    "in_use": "Age \"{0}\" is already in use",
-    "min": "The age must be at least 1.",
-    "max": "Age cannot be more than 200"
-}

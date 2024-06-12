@@ -1,7 +1,0 @@
-{
-    "caption": "Role",
-    "required": "Role is required",
-    "invalid": "The Role is invalid",
-    "not_found": "Role \"{0}\" not found",
-    "in_use": "Role \"{0}\" is already in use"
-}

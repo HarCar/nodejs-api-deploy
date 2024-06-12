@@ -1,0 +1,20 @@
+{
+  "header": {
+    "title": "Título",
+    "language": "Idioma"
+  },
+  "languages": {
+    "spanish": "Español",
+    "english": "Inglés"
+  },
+  "actions": {
+    "create": "Crear",
+    "save": "Guardar",
+    "close": "Cerrar",
+    "list": "Listado"
+  },
+  "security": {
+    "changeUserGroup": "Cambiar grupo de usuarios",
+    "signOut": "Salir"
+  }
+}

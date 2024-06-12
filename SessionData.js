@@ -1,12 +1,12 @@
-// session.js
-
 export class SessionData {
   static propertyEmailVerified = 'emailVerified'
   static propertyEmail = 'email'
   static propertyName = 'name'
   static propertyUid = 'uid'
   static propertyLastLoginDateTime = 'lastLoginDateTime'
-  static propertyViews = 'views'
+
+  static propertyCompany = 'company'
+  static propertyUserGroup = 'userGroup'
 
   constructor () {
     this.sessionData = {}

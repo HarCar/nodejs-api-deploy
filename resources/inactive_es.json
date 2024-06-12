@@ -1,9 +1,0 @@
-{
-    "caption": "Inactivo",
-    "required": "Inactivo es requerido",
-    "invalid": "Inactivo es invalido",
-    "not_found": "Inactivo \"{0}\" no se encontró",
-    "in_use": "Inactivo \"{0}\" ya está en uso",    
-    "min": "La Inactivo debe ser al menos 1",
-    "max": "La Inactivo no puede ser más de 200."
-}

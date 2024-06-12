@@ -1,7 +1,0 @@
-{
-    "caption": "Rol",
-    "required": "Rol es requerido",
-    "invalid": "Rol es invalido",
-    "not_found": "Rol \"{0}\" no se encontró",
-    "in_use": "Rol \"{0}\" ya está en uso"
-}
