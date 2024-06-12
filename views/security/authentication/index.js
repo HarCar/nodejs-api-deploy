@@ -36,17 +36,21 @@ signIn.addEventListener('click', (event) => {
 		body: JSON.stringify(parameters)
 	};
 
-	fetch(`${controller}/signIn`, opciones)
+	fetch(`${controller}/SignIn`, opciones)
     .then(response => {
         return response.json();
     })
     .then(response => {
         if (response.success) {
-            //formulario.reset();
-			document.querySelector('form#form-sign-in p.error').innerHTML = ''
-            document.querySelector('form#form-sign-in p.info').innerHTML = response.message
-			if(response.emailVerified){
+            //formulario.reset();			
+			if (response.redirect) {
+				location.href = response.url		
+			}
+			else if (response.emailVerified) {
 				location.href = '/'			
+			} else {
+				document.querySelector('form#form-sign-in p.error').innerHTML = ''
+				document.querySelector('form#form-sign-in p.info').innerHTML = response.message
 			}
         } else {
             document.querySelector('form#form-sign-in p.info').innerHTML = ''
