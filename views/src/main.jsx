@@ -8,6 +8,8 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
 import Header from './Header.jsx'
 import List from './List.jsx'
+import SignInSignUp from './SignInSignUp.jsx'
+import HeaderAuthentication from './HeaderAuthentication.jsx'
 import { DataProvider } from './DataContext';
 
 const Home = () => <div>Home</div>;
@@ -20,6 +22,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 
         <Routes>
           {/* Rutas que no necesitan DataProvider */}
+          <Route path='/Authentication' element={<><HeaderAuthentication /><SignInSignUp /></>} />
           <Route path='/Authentication/SelectCompany' element={<SelectCompany />} />
           <Route path='/Authentication/SelectUsersGroups' element={<div>Select group</div>} />
 

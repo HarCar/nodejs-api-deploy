@@ -1,15 +1,16 @@
 import config from "./config";
 import ShowDangerAlert from "./CustomComponents/ShowDangerAlert.jsx";
+import ShowInfoAlert from "./CustomComponents/ShowInfoAlert.jsx";
 import Load from './CustomComponents/Load.jsx'
 
 const FetchPOST = async ({ screen, body, urlParameters }) => {
     Load(true)
-
     try {
         const response = await fetch(`${config.baseApiURL}${screen}${urlParameters}`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Accept-Language': localStorage.i18nextLng
             },
             body: body
         });
@@ -18,11 +19,16 @@ const FetchPOST = async ({ screen, body, urlParameters }) => {
             const customResponse = await response.json()
             throw new Error(customResponse.message);
         }
+
         Load(false)
         const customResponse = await response.json();
+        if (screen === 'SignIn') {
+            localStorage.token = customResponse.token
+        }
+        if (customResponse.message !== undefined && customResponse.message.length !== 0) {
+            ShowInfoAlert({ error: '', errorDetail: customResponse.message })
+        }
         if (customResponse.redirect) {
-            if (customResponse.url === '/Authentication')
-                console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
             location.href = customResponse.url
         }
         return customResponse.data

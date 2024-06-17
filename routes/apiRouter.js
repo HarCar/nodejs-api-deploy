@@ -62,8 +62,12 @@ apiRouter.get("/SessionData", async (req, res, next) => {
 	}
 })
 apiRouter.get("/RenameProperty", BaseController.renameProperty)
+apiRouter.post("/SignUp", BaseController.SignUp)
+apiRouter.post("/SignIn", BaseController.SignIn)
+apiRouter.post("/PsasswordReset", BaseController.PasswordReset)
 apiRouter.post("/SignOut", BaseController.SignOut)
 apiRouter.post("/SelectCompany/:ID", BaseController.SetCompany)
+apiRouter.get("/Test", BaseController.Test)
 
 apiRouter.get("/:screen/:id", BaseController.find)
 apiRouter.get("/:screen/name/:name", BaseController.findByName)

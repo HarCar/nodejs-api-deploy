@@ -8,13 +8,15 @@ export function ErrorHandler(err, req, res, next) {
 	//   message: err.message,
 	//   err
 	// })
-	console.log(err)
+	// console.log(111, err)
 	const errorMessage = err.status === 404 ? "Ruta no encontrada...." : err.message
-	res.status(err.status || 500).json({
+	const response = {
 		success: false,
 		message: errorMessage,
-		data: err,
-	})
+		data: null,
+	}
+	console.log(err)
+	res.status(err.status || 500).json(response)
 }
 
 export function ResourceNotFound(req, res, next) {

@@ -37,7 +37,6 @@ app.disable("x-powered-by")
 
 // Servir archivos estáticos desde la carpeta 'build/dist' de React
 app.use(express.static(path.join(path.resolve(), "views", "dist")))
-app.use(express.static(path.join(path.resolve(), "views", "security", "authentication")))
 
 app.use(json())
 

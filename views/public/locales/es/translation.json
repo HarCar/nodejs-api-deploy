@@ -14,7 +14,20 @@
     "list": "Listado"
   },
   "security": {
-    "changeUserGroup": "Cambiar grupo de usuarios",
-    "signOut": "Salir"
+    "changeUserGroup": "cambiar grupo de usuario",
+    "signOut": "Cerrar sesión",
+    "authentication": "Autenticación",
+    "createAccount": "Crear cuenta",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "signIn": "Iniciar sesión",
+    "forgotYourPassword": "¿Olvidaste tu contraseña?",
+    "welcomeBack": "¡Bienvenido de nuevo!",
+    "personalInfo": "Para mantenerse conectado con nosotros, inicie sesión con su información personal",
+    "helloFriend": "¡Hola!",
+    "startJourneyWithUs": "Introduce tus datos personales y comienza tu viaje con nosotros",
+    "signUp": "Registrarse",
+    "thisIsAInfoAlert": "Esta es una alerta de información."
   }
 }

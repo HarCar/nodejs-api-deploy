@@ -1,4 +1,5 @@
 {
+  "ISAV": "ISAV",
   "header": {
     "title": "Title",
     "language": "Language"
@@ -15,6 +16,19 @@
   },
   "security": {
     "changeUserGroup": "change user group",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "authentication": "Authentication",
+    "createAccount": "Create Account",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign In",
+    "forgotYourPassword": "Forgot Your Password ?",
+    "welcomeBack": "Welcome Back!",
+    "personalInfo": "To keep connected with us please login with your personal info",
+    "helloFriend": "Hello, Friend!",
+    "startJourneyWithUs": "Enter your personal details and start journey with us",
+    "signUp": "Sign Up",
+    "thisIsAInfoAlert": "This is a info alert"
   }
 }

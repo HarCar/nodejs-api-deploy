@@ -16,13 +16,13 @@ import t from "../resources.js"
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-	apiKey: "AIzaSyCUvvSh2K8IIlqf_wVMsc-JqRBjxE680Mw",
-	authDomain: "isav-e597d.firebaseapp.com",
-	projectId: "isav-e597d",
-	storageBucket: "isav-e597d.appspot.com",
-	messagingSenderId: "892926121785",
-	appId: "1:892926121785:web:ce325a8bf0f3058237bae8",
-	measurementId: "G-Y1P49X25SH",
+	apiKey: "AIzaSyBi7msHKn4oDHS1JZRFeMTbf5N0J-EbEA0",
+	authDomain: "isav-solutions-authentication.firebaseapp.com",
+	projectId: "isav-solutions-authentication",
+	storageBucket: "isav-solutions-authentication.appspot.com",
+	messagingSenderId: "694880018657",
+	appId: "1:694880018657:web:b5e468a23ebf5f248417a0",
+	measurementId: "G-69FP9SZEPL",
 }
 
 // Initialize Firebase
@@ -60,19 +60,22 @@ export const FetchSignInMethodsForEmail = async ({ email }) => {
 export const SetMessageByErrorCode = ({ languageCode, error }) => {
 	switch (error.code) {
 		case "auth/weak-password":
-			error.message = t(languageCode, "invalid_length")
+			error.message = t(languageCode, "weakPassword")
 			break
 		case "auth/invalid-email":
-			error.message = t(languageCode, "email") + " " + this._Email + " " + t(this.languageCode, "invalid")
+			error.message = t(languageCode, "invalidEmail")
 			break
 		case "auth/email-already-in-use":
-			error.message = t(languageCode, "email") + " " + this._Email + " " + t(this.languageCode, "in_use")
+			error.message = t(languageCode, "email_already_in_use")
 			break
 		case "auth/invalid-credential":
 			error.message = t(languageCode, "email_or_password_incorrect")
 			break
 		case "auth/operation-not-supported-in-this-environment":
 			error.message = t(languageCode, "authentication_environment_not_configured")
+			break
+		case "auth/too-many-requests":
+			error.message = t(languageCode, "tooManyRequests")
 			break
 	}
 }

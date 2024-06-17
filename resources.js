@@ -23,6 +23,9 @@ const resources = {
 		verification_sent_to: "A verification was sent to email to activate the account",
 		welcome: "Welcome!",
 		goodbye: "Goodbye!",
+		weakPassword: "The password is too weak. It must be at least 6 characters long.",
+		invalidEmail: "The value provided for the property email is invalid.",
+		tooManyRequests: "The number of requests exceeds the maximum allowed.",
 	},
 	es: {
 		authentication: "Autenticación",
@@ -48,6 +51,9 @@ const resources = {
 		verification_sent_to: "Se envió una verificación al correo electrónico para activar la cuenta",
 		welcome: "¡Bienvenido!",
 		goodbye: "¡Adiós!",
+		weakPassword: "La contraseña es demasiado débil. Debe tener al menos 6 caracteres.",
+		invalidEmail: "El valor que se proporcionó para la propiedad del correo no es válido.",
+		tooManyRequests: "La cantidad de solicitudes supera el máximo permitido.",
 	},
 }
 

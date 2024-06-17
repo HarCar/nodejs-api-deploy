@@ -1,8 +1,9 @@
-import { ObjectId } from "mongodb"
 import { SessionData } from "../SessionData.js"
 import { BaseRepository } from "../repositories/BaseRepository.js"
 import { CompaniesRepository } from "../repositories/CompaniesRepository.js"
 import t from "../resources.js"
+import jwt from "jsonwebtoken"
+import { promisify } from "util"
 
 import {
 	CreateUserWithEmailAndPassword,
@@ -12,6 +13,7 @@ import {
 } from "../tools/authenticationFirebase.js"
 import path from "node:path"
 import Helpers from "../tools/Helpers.js"
+const verifyAsync = promisify(jwt.verify)
 
 export class BaseController {
 	static ValidateSession(req, res, next) {
@@ -22,40 +24,55 @@ export class BaseController {
 		}
 	}
 
-	static GetSessionData(req) {
-		const session = req.session.data
-			? req.session.data.sessionData
-			: {
-					// OJO temporal
-					emailVerified: true,
-					email: "harvycardoza@gmail.com",
-					uid: "gX22oZ8moHMQdbUxCLFfafDPPsd2",
-					lastLoginDateTime: new Date().toISOString(),
-					company: {
-						_id: new ObjectId("665879473f24fc739eacea86"),
-						Name: "Test",
-						CountryID: new ObjectId("6653bd0cd0d47d4c0bdfd0a3"),
-					},
-					userGroup: {
-						_id: new ObjectId("665879473f24fc739eacea89"),
-						UserGroupID: {
-							acknowledged: true,
-							insertedId: new ObjectId("665879473f24fc739eacea88"),
-						},
-						uid: "gX22oZ8moHMQdbUxCLFfafDPPsd2",
-					},
-				}
+	static async GetSessionData(req) {
+		// const session = req.session.data
+		// 	? req.session.data.sessionData
+		// 	: {
+		// 			// OJO temporal
+		// 			emailVerified: true,
+		// 			email: "harvycardoza@gmail.com",
+		// 			uid: "gX22oZ8moHMQdbUxCLFfafDPPsd2",
+		// 			lastLoginDateTime: new Date().toISOString(),
+		// 			company: {
+		// 				_id: new ObjectId("665879473f24fc739eacea86"),
+		// 				Name: "Test",
+		// 				CountryID: new ObjectId("6653bd0cd0d47d4c0bdfd0a3"),
+		// 			},
+		// 			userGroup: {
+		// 				_id: new ObjectId("665879473f24fc739eacea89"),
+		// 				UserGroupID: {
+		// 					acknowledged: true,
+		// 					insertedId: new ObjectId("665879473f24fc739eacea88"),
+		// 				},
+		// 				uid: "gX22oZ8moHMQdbUxCLFfafDPPsd2",
+		// 			},
+		// 		}
+		const authHeader = req.headers["authorization"]
 
-		const sessionData = new SessionData()
-		sessionData.set(SessionData.propertyEmailVerified, session.emailVerified)
-		sessionData.set(SessionData.propertyEmail, session.email)
-		sessionData.set(SessionData.propertyUid, session.uid)
-		sessionData.set(SessionData.propertyLastLoginDateTime, session.lastLoginDateTime)
-		sessionData.set(SessionData.propertyViews, session.views)
-		sessionData.set(SessionData.propertyCompany, session.company)
-		sessionData.set(SessionData.propertyUserGroup, session.userGroup)
+		const token = authHeader && authHeader.split(" ")[1]
+		console.log(token)
+		let session = req.session.data
+		if (token !== null) {
+			try {
+				session = await verifyAsync(token, "tu_secreto")
+				console.log(session)
+			} catch (e) {
+				console.log(e)
+			}
+		}
 
-		return sessionData
+		return token
+
+		// const sessionData = new SessionData()
+		// sessionData.set(SessionData.propertyEmailVerified, session.emailVerified)
+		// sessionData.set(SessionData.propertyEmail, session.email)
+		// sessionData.set(SessionData.propertyUid, session.uid)
+		// sessionData.set(SessionData.propertyLastLoginDateTime, session.lastLoginDateTime)
+		// sessionData.set(SessionData.propertyViews, session.views)
+		// sessionData.set(SessionData.propertyCompany, session.company)
+		// sessionData.set(SessionData.propertyUserGroup, session.userGroup)
+
+		// return sessionData
 	}
 
 	static async get(req, res, next) {
@@ -135,7 +152,7 @@ export class BaseController {
 			contextConfig,
 			languageCode,
 			entity: screen,
-			sessionData: BaseController.GetSessionData(req),
+			sessionData: await BaseController.GetSessionData(req),
 		})
 		try {
 			if (screen === "Companies" && Array.isArray(req.body)) {
@@ -251,8 +268,7 @@ export class BaseController {
 	static async SignInSignUp(req, res, next) {
 		console.log("SignInSignUp")
 		try {
-			const language = req.language.code === "en" ? "_en" : "es"
-			res.sendFile(path.join(path.resolve(), "views", "security", "authentication", "index_" + language + ".html"))
+			res.sendFile(path.join(path.resolve(), "views", "dist", "index.html"))
 		} catch (error) {
 			next(error)
 		}
@@ -270,6 +286,8 @@ export class BaseController {
 		try {
 			const { ID } = req.params
 			const languageCode = req.language !== undefined && req.language.code === "en" ? "en" : "es"
+
+			console.log(req.session.data)
 
 			const contextConfig = req.context.db("IsavConfig")
 			const context = req.context.db(ID)
@@ -336,7 +354,7 @@ export class BaseController {
 			const collection = context.collection("Users")
 
 			await collection.insertOne({ email, name })
-			res.send({ success: true, message: `${t(languageCode, "verification_sent_to")} ${email}` })
+			res.send({ success: true, message: `${t(languageCode, "verification_sent_to")} ${email}`, data: true })
 		} catch (error) {
 			SetMessageByErrorCode({ languageCode, error })
 			next(error)
@@ -361,6 +379,8 @@ export class BaseController {
 				req.session.data.set(SessionData.propertyUid, result.userCredential.user.uid)
 				req.session.data.set(SessionData.propertyLastLoginDateTime, new Date())
 
+				console.log("req.session.data", req.session.data)
+
 				const contextConfig = req.context.db("IsavConfig")
 				const baseRepository = new BaseRepository({
 					context: null,
@@ -377,12 +397,16 @@ export class BaseController {
 
 					if (usersGroups.length === 1) {
 						req.session.data.set(SessionData.propertyUserGroup, usersGroups[0])
-						res.send({ success: true, redirect: true, url: "/" })
+						const token = jwt.sign(req.session.data, "tu_secreto", { expiresIn: "1h" })
+						res.send({ success: true, redirect: true, url: "/", token })
 					} else {
-						res.send({ success: true, redirect: true, url: "/Authentication/SelectUsersGroups" })
+						const token = jwt.sign(req.session.data, "tu_secreto", { expiresIn: "1h" })
+						res.send({ success: true, redirect: true, url: "/Authentication/SelectUsersGroups", token })
 					}
 				} else {
-					res.send({ success: true, redirect: true, url: "/Authentication/SelectCompany" })
+					const token = jwt.sign({ user: "Harvy", userID: 45 }, "tu_secreto", { expiresIn: "1h" })
+					console.log(token)
+					res.send({ success: true, redirect: true, url: "/Authentication/SelectCompany", token })
 				}
 			} else {
 				res.send({ success: true, message: `${t(languageCode, "verification_sent_to")} ${email}` })
@@ -433,7 +457,8 @@ export class BaseController {
 
 	static async Test(req, res, next) {
 		try {
-			const sessionData = BaseController.GetSessionData(req.session.data.sessionData)
+			console.log(req.session?.data?.sessionData)
+			const sessionData = await BaseController.GetSessionData(req)
 			res.send(sessionData)
 		} catch (error) {
 			next(error)

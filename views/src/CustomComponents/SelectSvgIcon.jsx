@@ -5,7 +5,8 @@ import {
     SvgIconsReports,
     SvgIconsSave,
     SvgIconsList,
-    SvgIconsCreate
+    SvgIconsCreate,
+    SvgIconsAtSign
 } from './SvgIcons.jsx'
 export function SelectSvgIcon(props) {
     return (
@@ -36,6 +37,10 @@ export function SelectSvgIcon(props) {
 
             {props.name === 'Create' && (
                 <SvgIconsCreate />
+            )}
+
+            {props.name === 'AtSign' && (
+                <SvgIconsAtSign />
             )}
         </>
     )
