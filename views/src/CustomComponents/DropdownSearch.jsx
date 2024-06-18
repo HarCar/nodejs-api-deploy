@@ -38,12 +38,8 @@ const DropdownSearch = ({ properties }) => {
 
   const fetchDropdownItems = async (searchText) => {
     try {
-      console.log(searchText)
-      // const url = `${config.baseApiURL}${properties.Source}?ForSelect=true&Name=${searchText}`
-      // const responseObjet = await fetch(url);
-      // const response = await responseObjet.json();
-
-      // setDropdownItems(response.data);
+      const filtereddata = properties.DataSource.filter(map => map.Caption_en.toLowerCase().includes(searchText.toLowerCase()) || map.Caption_es.toLowerCase().includes(searchText.toLowerCase()));
+      setDropdownItems(filtereddata)
     } catch (error) {
       console.error('Error fetching dropdown items:', error);
     }
@@ -62,7 +58,10 @@ const DropdownSearch = ({ properties }) => {
           className="mh-input p-2.5 pr-8 w-full text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
           type="text"
           placeholder={`${properties.Placeholder === undefined ? '' : properties.Placeholder}`}
-          onChange={(event) => { setTextValue(event.target.value); if (event.target.value.length > 2) fetchDropdownItems(event.target.value) }}
+          onChange={(event) => {
+            setTextValue(event.target.value);
+            fetchDropdownItems(event.target.value)
+          }}
           value={textValue}
           onFocusCapture={handledDropdownSearch}
           ref={buttonDropdownSearchRef}
