@@ -26,6 +26,7 @@ const resources = {
 		weakPassword: "The password is too weak. It must be at least 6 characters long.",
 		invalidEmail: "The value provided for the property email is invalid.",
 		tooManyRequests: "The number of requests exceeds the maximum allowed.",
+		invalidOrExpiredSession: "Invalid or expired session.",
 	},
 	es: {
 		authentication: "Autenticación",
@@ -54,6 +55,7 @@ const resources = {
 		weakPassword: "La contraseña es demasiado débil. Debe tener al menos 6 caracteres.",
 		invalidEmail: "El valor que se proporcionó para la propiedad del correo no es válido.",
 		tooManyRequests: "La cantidad de solicitudes supera el máximo permitido.",
+		invalidOrExpiredSession: "Sesión no válida o expirada.",
 	},
 }
 

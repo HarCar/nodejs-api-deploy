@@ -57,7 +57,6 @@ export class BaseRepository {
 		} else {
 			dataFilter = await this._entity.find(filters).toArray()
 		}
-
 		if (Helpers.any(dataFilter)) {
 			for (const i in dataFilter) {
 				const fields = Object.keys(dataFilter[i])
@@ -86,7 +85,6 @@ export class BaseRepository {
 					if (fieldProperties.Type === "ObjectId") {
 						const _id = dataFilter[i][field]
 						const data = await this.getContext().collection(fieldProperties.Source).findOne({ _id })
-
 						if (Helpers.isNull(data)) {
 							continue
 						}
@@ -135,7 +133,7 @@ export class BaseRepository {
 
 	async find({ id }) {
 		await this.setFieldsProperties()
-		const _id = new ObjectId(id)
+		const _id = new ObjectId(`${id}`)
 		const data = await this._entity.findOne({ _id })
 
 		if (!Helpers.isNull(data)) {

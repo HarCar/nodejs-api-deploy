@@ -11,6 +11,9 @@ export class FrontendRepository {
 		this._languageCode = languageCode
 		this._sessionData = sessionData
 		this._entity = context.collection(entity)
+		this.getContext = () => {
+			return Constants.ISAV_CONFIG_ENTITIES.some((map) => map === entity) ? this._contextConfig : this._context
+		}
 	}
 
 	async getScreens() {
@@ -29,7 +32,7 @@ export class FrontendRepository {
 
 	async getDataScreen({ entity }) {
 		let actions = await this._context.collection(Constants.ENTITY_ACTIONS).find({}).toArray()
-		const fieldsProperties = await FieldsProperties({ context: this._context })
+		const fieldsProperties = await FieldsProperties({ context: this.getContext() })
 
 		actions = await CompleteObjectRelationships({
 			context: this._context,
@@ -38,9 +41,9 @@ export class FrontendRepository {
 			languageCode: this._languageCode,
 		})
 
-		let formFieldsEntity = fieldsProperties.filter((item) => item.Screens.includes(entity))
+		let formFieldsEntity = fieldsProperties.filter((item) => item.Screens?.includes(entity))
 		formFieldsEntity = await CompleteSource({
-			context: this._context,
+			context: this.getContext(),
 			data: formFieldsEntity,
 			languageCode: this._languageCode,
 		})

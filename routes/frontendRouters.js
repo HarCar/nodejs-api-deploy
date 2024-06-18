@@ -4,6 +4,7 @@ import { FrontendController } from "../controllers/FrontendController.js"
 export const frontendRouters = Router()
 
 frontendRouters.get("/:screen/DataScreen", FrontendController.dataScreen)
+frontendRouters.get("/Companies/Create", FrontendController.createCompany)
 frontendRouters.get("/:screen/Create", FrontendController.create)
 frontendRouters.get("/:screen", FrontendController.list)
 frontendRouters.get("/", FrontendController.home)

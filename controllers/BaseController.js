@@ -16,63 +16,44 @@ import Helpers from "../tools/Helpers.js"
 const verifyAsync = promisify(jwt.verify)
 
 export class BaseController {
-	static ValidateSession(req, res, next) {
-		if (!req.session.data) {
-			return res.redirect("/login")
+	static async ValidateSession(req, res, next) {
+		const sessionData = await BaseController.GetSessionData(req)
+		if (Helpers.isNull(sessionData)) {
+			const languageCode = req.language !== undefined && req.language.code === "en" ? "en" : "es"
+			return res.status(401).send({ success: false, message: t(languageCode, "invalidOrExpiredSession") })
+
+			// return res.redirect("/login")
 		} else {
 			next()
 		}
 	}
 
 	static async GetSessionData(req) {
-		// const session = req.session.data
-		// 	? req.session.data.sessionData
-		// 	: {
-		// 			// OJO temporal
-		// 			emailVerified: true,
-		// 			email: "harvycardoza@gmail.com",
-		// 			uid: "gX22oZ8moHMQdbUxCLFfafDPPsd2",
-		// 			lastLoginDateTime: new Date().toISOString(),
-		// 			company: {
-		// 				_id: new ObjectId("665879473f24fc739eacea86"),
-		// 				Name: "Test",
-		// 				CountryID: new ObjectId("6653bd0cd0d47d4c0bdfd0a3"),
-		// 			},
-		// 			userGroup: {
-		// 				_id: new ObjectId("665879473f24fc739eacea89"),
-		// 				UserGroupID: {
-		// 					acknowledged: true,
-		// 					insertedId: new ObjectId("665879473f24fc739eacea88"),
-		// 				},
-		// 				uid: "gX22oZ8moHMQdbUxCLFfafDPPsd2",
-		// 			},
-		// 		}
 		const authHeader = req.headers["authorization"]
-
 		const token = authHeader && authHeader.split(" ")[1]
-		console.log(token)
 		let session = req.session.data
-		if (token !== null) {
+		if (!Helpers.isNull(token) && Helpers.isNull(session)) {
 			try {
 				session = await verifyAsync(token, "tu_secreto")
-				console.log(session)
 			} catch (e) {
 				console.log(e)
 			}
 		}
 
-		return token
+		if (Helpers.isNull(session)) {
+			return null
+		}
 
-		// const sessionData = new SessionData()
-		// sessionData.set(SessionData.propertyEmailVerified, session.emailVerified)
-		// sessionData.set(SessionData.propertyEmail, session.email)
-		// sessionData.set(SessionData.propertyUid, session.uid)
-		// sessionData.set(SessionData.propertyLastLoginDateTime, session.lastLoginDateTime)
-		// sessionData.set(SessionData.propertyViews, session.views)
-		// sessionData.set(SessionData.propertyCompany, session.company)
-		// sessionData.set(SessionData.propertyUserGroup, session.userGroup)
+		const sessionData = new SessionData()
+		sessionData.set(SessionData.propertyEmailVerified, session.emailVerified)
+		sessionData.set(SessionData.propertyEmail, session.email)
+		sessionData.set(SessionData.propertyUid, session.uid)
+		sessionData.set(SessionData.propertyLastLoginDateTime, session.lastLoginDateTime)
+		sessionData.set(SessionData.propertyViews, session.views)
+		sessionData.set(SessionData.propertyCompany, session.company)
+		sessionData.set(SessionData.propertyUserGroup, session.userGroup)
 
-		// return sessionData
+		return sessionData
 	}
 
 	static async get(req, res, next) {
@@ -143,6 +124,39 @@ export class BaseController {
 		}
 	}
 
+	static async saveCompany(req, res, next) {
+		console.log("saveCompany")
+		const contextConfig = req.context.db("IsavConfig")
+		const languageCode = req.language !== undefined && req.language.code === "en" ? "en" : "es"
+
+		try {
+			if (Array.isArray(req.body)) {
+				throw new Error("No puedes crear mas de una empresa al mismo tiempo")
+			}
+
+			const companiesRepository = new CompaniesRepository({
+				context: null,
+				contextConfig,
+				languageCode,
+				entity: "Companies",
+				sessionData: req.session.data,
+			})
+			const data = await companiesRepository.insert({ objet: req.body })
+			companiesRepository["_context"] = req.context.db(data._id.toString())
+			companiesRepository.completeSetup({ company: data })
+
+			res.json({
+				success: true,
+				message: "Registro gurdado",
+				data,
+				redirect: true,
+				url: "/Authentication/SelectCompany",
+			})
+		} catch (error) {
+			next(error)
+		}
+	}
+
 	static async post(req, res, next) {
 		const { screen } = req.params
 		const { context, contextConfig } = BaseController.getContexts(req)
@@ -170,7 +184,7 @@ export class BaseController {
 					contextConfig,
 					languageCode,
 					entity: "Companies",
-					sessionData: req.session.data.sessionData,
+					sessionData: req.session.data,
 				})
 				await companiesRepository.completeSetup({ company: data })
 				redirect = true
@@ -257,14 +271,38 @@ export class BaseController {
 
 		// if (Helpers.isNull(req.session.data)) { return { context: req.context.db('IsavConfig'), contextConfig: null } }
 
-		// if (Helpers.isNull(req.session.data.sessionData)) { return { context: req.context.db('IsavConfig'), contextConfig: null } }
+		// if (Helpers.isNull(req.session.data)) { return { context: req.context.db('IsavConfig'), contextConfig: null } }
 
-		// if (Helpers.isNull(req.session.data.sessionData.company)) { return { context: req.context.db('IsavConfig'), contextConfig: null } }
+		// if (Helpers.isNull(req.session.data.company)) { return { context: req.context.db('IsavConfig'), contextConfig: null } }
 
-		// return { context: req.context.db(req.session.data.sessionData.company._id.toString()), contextConfig: req.context.db('IsavConfig') }
+		// return { context: req.context.db(req.session.data.company.CompanyID.toString()), contextConfig: req.context.db('IsavConfig') }
 	}
 
 	// Authentication
+	static async UsersCompanies(req, res, next) {
+		const { context, contextConfig } = BaseController.getContexts(req)
+		const languageCode = req.language !== undefined && req.language.code === "en" ? "en" : "es"
+		const repository = new BaseRepository({
+			context,
+			contextConfig,
+			languageCode,
+			entity: "Users_Companies",
+			sessionData: null,
+		})
+
+		try {
+			const data = await repository.get({ queryParams: { uid: req.session.data.uid } })
+
+			res.json({
+				success: true,
+				message: null,
+				data,
+			})
+		} catch (error) {
+			next(error)
+		}
+	}
+
 	static async SignInSignUp(req, res, next) {
 		console.log("SignInSignUp")
 		try {
@@ -286,9 +324,6 @@ export class BaseController {
 		try {
 			const { ID } = req.params
 			const languageCode = req.language !== undefined && req.language.code === "en" ? "en" : "es"
-
-			console.log(req.session.data)
-
 			const contextConfig = req.context.db("IsavConfig")
 			const context = req.context.db(ID)
 			let baseRepository = new BaseRepository({
@@ -296,24 +331,23 @@ export class BaseController {
 				contextConfig,
 				languageCode,
 				entity: "Companies",
-				sessionData: req.session.data.sessionData,
+				sessionData: req.session.data,
 			})
 			const company = await baseRepository.find({ id: ID })
 
-			req.session.data.sessionData.company = company
-			req.session.data.sessionData.companyID = company._id.toString()
-			const uid = req.session.data.sessionData.uid
+			req.session.data.company = company
+			const uid = req.session.data.uid
 
 			baseRepository = new BaseRepository({
 				context,
 				contextConfig,
 				languageCode,
 				entity: "Users_Groups",
-				sessionData: req.session.data.sessionData,
+				sessionData: req.session.data,
 			})
 			const usersGroups = await baseRepository.get({ queryParams: { uid } })
 			if (usersGroups.length === 1) {
-				req.session.data.sessionData.userGroup = usersGroups[0]
+				req.session.data.userGroup = usersGroups[0]
 				res.send({ success: true, redirect: true, url: "/" })
 			} else {
 				res.send({ success: true, redirect: true, url: "/Authentication/SelectUsersGroups" })
@@ -363,54 +397,81 @@ export class BaseController {
 
 	static async SignIn(req, res, next) {
 		const languageCode = req.language !== undefined && req.language.code === "en" ? "en" : "es"
-		const { email, password } = req.body
+		const { email, password, companyID, userGroupID } = req.body
 
 		try {
+			const response = {
+				success: true,
+			}
 			if (Helpers.isNullOrEmpty(email)) throw new Error(t(languageCode, "email") + " " + t(languageCode, "required"))
 			if (Helpers.isNullOrEmpty(password))
 				throw new Error(t(languageCode, "password") + " " + t(languageCode, "required"))
 
 			const result = await SignInWithEmailAndPassword(email, password)
-
+			const sessionData = new SessionData()
 			if (result.userCredential.user.emailVerified) {
-				req.session.data = new SessionData()
-				req.session.data.set(SessionData.propertyEmailVerified, result.userCredential.user.emailVerified)
-				req.session.data.set(SessionData.propertyEmail, result.userCredential.user.email)
-				req.session.data.set(SessionData.propertyUid, result.userCredential.user.uid)
-				req.session.data.set(SessionData.propertyLastLoginDateTime, new Date())
-
-				console.log("req.session.data", req.session.data)
+				sessionData.set(SessionData.propertyEmailVerified, result.userCredential.user.emailVerified)
+				sessionData.set(SessionData.propertyEmail, result.userCredential.user.email)
+				sessionData.set(SessionData.propertyUid, result.userCredential.user.uid)
 
 				const contextConfig = req.context.db("IsavConfig")
-				const baseRepository = new BaseRepository({
+				let baseRepository = new BaseRepository({
 					context: null,
 					contextConfig,
 					languageCode,
 					entity: "Users_Companies",
-					sessionData: req.session.data,
+					sessionData: sessionData,
 				})
-				const userCompanies = await baseRepository.get({ queryParams: null })
+				let userCompanies = await baseRepository.get({
+					queryParams: { uid: sessionData.get(SessionData.propertyUid) },
+				})
+
+				if (!Helpers.isNullOrEmpty(companyID) && Helpers.any(userCompanies)) {
+					userCompanies = userCompanies.filter((map) => map.CompanyID.toString() === companyID)
+				}
+
+				if (!Helpers.any(userCompanies)) {
+					throw new Error(`No se encontro la emprea con ID ${companyID}`)
+				}
 
 				if (userCompanies.length === 1) {
-					req.session.data.set(SessionData.propertyCompany, userCompanies[0])
-					const usersGroups = await baseRepository.get({ queryParams: null, entity: "Users_Groups" })
+					sessionData.set(SessionData.propertyCompany, userCompanies[0])
+					baseRepository = new BaseRepository({
+						context: req.context.db(userCompanies[0].CompanyID.toString()),
+						contextConfig,
+						languageCode,
+						entity: "Users_Groups",
+						sessionData: sessionData,
+					})
+
+					let usersGroups = await baseRepository.get({ queryParams: null })
+
+					if (!Helpers.isNullOrEmpty(userGroupID) && Helpers.any(usersGroups)) {
+						usersGroups = usersGroups.filter((map) => map.UserGroupID.toString() === userGroupID)
+					}
+					if (!Helpers.any(usersGroups)) {
+						throw new Error(`No se encontro la grupo de usuario con ID ${userGroupID}`)
+					}
 
 					if (usersGroups.length === 1) {
-						req.session.data.set(SessionData.propertyUserGroup, usersGroups[0])
-						const token = jwt.sign(req.session.data, "tu_secreto", { expiresIn: "1h" })
-						res.send({ success: true, redirect: true, url: "/", token })
+						sessionData.set(SessionData.propertyUserGroup, usersGroups[0])
+						response.redirect = true
+						response.url = "/"
 					} else {
-						const token = jwt.sign(req.session.data, "tu_secreto", { expiresIn: "1h" })
-						res.send({ success: true, redirect: true, url: "/Authentication/SelectUsersGroups", token })
+						response.redirect = true
+						response.url = "/Authentication/SelectUsersGroups"
 					}
 				} else {
-					const token = jwt.sign({ user: "Harvy", userID: 45 }, "tu_secreto", { expiresIn: "1h" })
-					console.log(token)
-					res.send({ success: true, redirect: true, url: "/Authentication/SelectCompany", token })
+					response.redirect = true
+					response.url = "/Authentication/SelectCompany"
 				}
 			} else {
-				res.send({ success: true, message: `${t(languageCode, "verification_sent_to")} ${email}` })
+				response.message = `${t(languageCode, "verification_sent_to")} ${email}`
 			}
+
+			response.token = jwt.sign({ ...sessionData }, "tu_secreto", { expiresIn: "1h" })
+			req.session.data = sessionData
+			res.send(response)
 		} catch (error) {
 			SetMessageByErrorCode({ languageCode, error })
 			next(error)
@@ -436,9 +497,9 @@ export class BaseController {
 	static async SignOut(req, res) {
 		console.log("SignOut")
 		const languageCode = req.language !== undefined && req.language.code === "en" ? "en" : "es"
-		const sesion = req.session
-		if (sesion) {
-			sesion.destroy(async (error) => {
+		const session = req.session
+		if (session) {
+			session.destroy(async (error) => {
 				if (error) {
 					const message = t(languageCode, "logout_error")
 					res.send({ success: false, message: message.toString() + " " + error.message })
@@ -457,7 +518,6 @@ export class BaseController {
 
 	static async Test(req, res, next) {
 		try {
-			console.log(req.session?.data?.sessionData)
 			const sessionData = await BaseController.GetSessionData(req)
 			res.send(sessionData)
 		} catch (error) {
@@ -465,7 +525,6 @@ export class BaseController {
 		}
 	}
 
-	// Aasas
 	static async backupRemote() {
 		require("dotenv").config()
 		const { exec } = require("child_process")

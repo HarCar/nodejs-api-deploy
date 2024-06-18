@@ -36,6 +36,7 @@ const CompleteSource = async ({ context, data, languageCode }) => {
 				]
 				continue
 			}
+
 			if (data[i]["Name"] === "Source") {
 				const actions = await context.collection(Constants.ENTITY_ACTIONS).find({}).toArray()
 				const actionsDataSource = []

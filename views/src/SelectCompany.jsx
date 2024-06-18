@@ -76,7 +76,7 @@ const SelectCompany = () => {
         className="grid relative gap-1 justify-between items-center w-full sm:px-4 lg:max-w-7xl grid-cols-6 auto-rows-[172px] gap-4">
         {fieldsProperties && (
           fieldsProperties.map((company) => (
-            <Company key={company._id} id={company._id} name={company.Name} country={company.CountryName} />
+            <Company key={company._id} id={company.CompanyID} name={company.CompanyName} country={company.CountryName} />
           ))
         )}
       </div>
