@@ -7,13 +7,19 @@ const FetchGET = async ({ screen, urlParameters, useApi = true }) => {
 
     try {
         const baseUrl = useApi ? config.baseApiURL : config.baseFrontendURL
+        const header = {
+            'Content-Type': 'application/json',
+            'Accept-Language': localStorage.i18nextLng,
+        }
+        if (localStorage.token !== undefined) {
+            header['Authorization'] = `Bearer ${localStorage.token}`
+        }
+
+        console.log(header)
+
         const response = await fetch(`${baseUrl}${screen}${urlParameters}`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept-Language': localStorage.i18nextLng
-
-            }
+            headers: header
         });
 
         if (!response.ok) {

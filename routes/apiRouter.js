@@ -1,11 +1,13 @@
 import { Router } from "express"
 import { BaseController } from "../controllers/BaseController.js"
+import Helpers from "../tools/Helpers.js"
 
 export const apiRouter = Router()
 
 apiRouter.get("/SessionData", async (req, res, next) => {
-	if (req.session.data) {
-		const data = req.session.data
+	const sessionData = BaseController.GetSessionData(req)
+	if (!Helpers.isNull(sessionData)) {
+		const data = sessionData
 		data["actions"] = await BaseController.getMenu(req, next)
 		res.json({
 			success: true,

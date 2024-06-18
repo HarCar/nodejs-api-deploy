@@ -139,7 +139,7 @@ export class BaseController {
 				contextConfig,
 				languageCode,
 				entity: "Companies",
-				sessionData: req.session.data,
+				sessionData: BaseController.GetSessionData(req),
 			})
 			const data = await companiesRepository.insert({ objet: req.body })
 			companiesRepository["_context"] = req.context.db(data._id.toString())
@@ -184,7 +184,7 @@ export class BaseController {
 					contextConfig,
 					languageCode,
 					entity: "Companies",
-					sessionData: req.session.data,
+					sessionData: BaseController.GetSessionData(req),
 				})
 				await companiesRepository.completeSetup({ company: data })
 				redirect = true
@@ -269,13 +269,15 @@ export class BaseController {
 		// OJO Temporal
 		return { context: req.context.db("665879473f24fc739eacea86"), contextConfig: req.context.db("IsavConfig") }
 
-		// if (Helpers.isNull(req.session.data)) { return { context: req.context.db('IsavConfig'), contextConfig: null } }
+		// const sessionData= BaseController.GetSessionData(req)
 
-		// if (Helpers.isNull(req.session.data)) { return { context: req.context.db('IsavConfig'), contextConfig: null } }
+		// if (Helpers.isNull(sessionData)) { return { context: req.context.db('IsavConfig'), contextConfig: null } }
 
-		// if (Helpers.isNull(req.session.data.company)) { return { context: req.context.db('IsavConfig'), contextConfig: null } }
+		// if (Helpers.isNull(sessionData)) { return { context: req.context.db('IsavConfig'), contextConfig: null } }
 
-		// return { context: req.context.db(req.session.data.company.CompanyID.toString()), contextConfig: req.context.db('IsavConfig') }
+		// if (Helpers.isNull(sessionData.company)) { return { context: req.context.db('IsavConfig'), contextConfig: null } }
+
+		// return { context: req.context.db(sessionData.company.CompanyID.toString()), contextConfig: req.context.db('IsavConfig') }
 	}
 
 	// Authentication
@@ -291,7 +293,8 @@ export class BaseController {
 		})
 
 		try {
-			const data = await repository.get({ queryParams: { uid: req.session.data.uid } })
+			const sessionData = BaseController.GetSessionData(req)
+			const data = await repository.get({ queryParams: { uid: sessionData.uid } })
 
 			res.json({
 				success: true,
@@ -322,36 +325,44 @@ export class BaseController {
 
 	static async SetCompany(req, res, next) {
 		try {
+			const response = { success: true }
 			const { ID } = req.params
 			const languageCode = req.language !== undefined && req.language.code === "en" ? "en" : "es"
 			const contextConfig = req.context.db("IsavConfig")
 			const context = req.context.db(ID)
+			const sessionData = BaseController.GetSessionData(req)
+
 			let baseRepository = new BaseRepository({
 				context,
 				contextConfig,
 				languageCode,
 				entity: "Companies",
-				sessionData: req.session.data,
+				sessionData: sessionData,
 			})
 			const company = await baseRepository.find({ id: ID })
-
-			req.session.data.company = company
-			const uid = req.session.data.uid
+			sessionData.set(SessionData.propertyCompany, company)
+			const uid = sessionData.uid
 
 			baseRepository = new BaseRepository({
 				context,
 				contextConfig,
 				languageCode,
 				entity: "Users_Groups",
-				sessionData: req.session.data,
+				sessionData: sessionData,
 			})
 			const usersGroups = await baseRepository.get({ queryParams: { uid } })
 			if (usersGroups.length === 1) {
-				req.session.data.userGroup = usersGroups[0]
-				res.send({ success: true, redirect: true, url: "/" })
+				sessionData.set(SessionData.propertyUserGroup, usersGroups[0])
+				response.redirect = true
+				response.url = "/"
 			} else {
-				res.send({ success: true, redirect: true, url: "/Authentication/SelectUsersGroups" })
+				response.redirect = true
+				response.url = "/Authentication/SelectUsersGroups"
 			}
+
+			response.token = jwt.sign({ ...sessionData }, "tu_secreto", { expiresIn: "1h" })
+			req.session.data = sessionData
+			res.send(response)
 		} catch (error) {
 			next(error)
 		}

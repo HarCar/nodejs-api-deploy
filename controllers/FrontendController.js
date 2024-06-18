@@ -2,13 +2,14 @@ import { FrontendRepository } from "../repositories/FrontendRepository.js"
 import Constants from "../tools/Constants.js"
 import path from "node:path"
 import Helpers from "../tools/Helpers.js"
+import { BaseController } from "./BaseController.js"
 
 export class FrontendController {
 	static async home(req, res, next) {
 		try {
-			const sessionData = req?.session?.data ?? null
-			const company = req?.session?.data?.company ?? null
-			const userGroup = req?.session?.data?.userGroup ?? null
+			const sessionData = await BaseController.GetSessionData(req)
+			const company = sessionData?.company ?? null
+			const userGroup = sessionData.userGroup ?? null
 
 			if (sessionData == null) {
 				return res.redirect("/Authentication")
@@ -28,20 +29,17 @@ export class FrontendController {
 		console.log("list")
 		try {
 			const { screen } = req.params
+			const sessionData = await BaseController.GetSessionData(req)
+			const company = sessionData?.company ?? null
+			const userGroup = sessionData.userGroup ?? null
 
-			if (req.session.data === undefined || req.session.data === undefined || req.session.data == null) {
+			if (Helpers.isNull(sessionData)) {
 				return res.redirect("/Authentication")
 			}
-			if (
-				screen + "/Create" !== "Companies/Create" &&
-				(req.session.data.company === undefined || req.session.data.company === null)
-			) {
+			if (screen + "/Create" !== "Companies/Create" && Helpers.isNull(company)) {
 				return res.redirect("/Authentication/SelectCompany")
 			}
-			if (
-				screen + "/Create" !== "Companies/Create" &&
-				(req.session.data.userGroup === undefined || req.session.data.userGroup === null)
-			) {
+			if (screen + "/Create" !== "Companies/Create" && Helpers.isNull(userGroup)) {
 				return res.redirect("/Authentication/SelectUsersGroups")
 			}
 
@@ -56,20 +54,17 @@ export class FrontendController {
 
 		try {
 			const { screen } = req.params
+			const sessionData = await BaseController.GetSessionData(req)
+			const company = sessionData?.company ?? null
+			const userGroup = sessionData.userGroup ?? null
 
-			if (req.session.data === undefined || req.session.data === undefined || req.session.data == null) {
+			if (Helpers.isNull(sessionData)) {
 				return res.redirect("/Authentication")
 			}
-			if (
-				screen + "/Create" !== "Companies/Create" &&
-				(req.session.data.company === undefined || req.session.data.company === null)
-			) {
+			if (screen + "/Create" !== "Companies/Create" && Helpers.isNull(company)) {
 				return res.redirect("/Authentication/SelectCompany")
 			}
-			if (
-				screen + "/Create" !== "Companies/Create" &&
-				(req.session.data.userGroup === undefined || req.session.data.userGroup === null)
-			) {
+			if (screen + "/Create" !== "Companies/Create" && Helpers.isNull(userGroup)) {
 				return res.redirect("/Authentication/SelectUsersGroups")
 			}
 
@@ -97,19 +92,19 @@ export class FrontendController {
 	static async dataScreen(req, res, next) {
 		try {
 			const { screen } = req.params
-			const sessionData = req?.session?.data ?? null
-			const company = req?.session?.data?.company ?? null
-			const userGroup = req?.session?.data?.userGroup ?? null
+			const sessionData = await BaseController.GetSessionData(req)
+			const company = sessionData?.company ?? null
+			const userGroup = sessionData.userGroup ?? null
 
-			if (sessionData === null) {
+			if (Helpers.isNull(sessionData)) {
 				res.send({ success: true, redirect: true, url: "/Authentication" })
 				return
 			}
-			if (screen + "/Create" !== "Companies/Create" && company === null) {
+			if (screen + "/Create" !== "Companies/Create" && Helpers.isNull(company)) {
 				res.send({ success: true, redirect: true, url: "/Authentication/SelectCompany" })
 				return
 			}
-			if (screen + "/Create" !== "Companies/Create" && userGroup === null) {
+			if (screen + "/Create" !== "Companies/Create" && Helpers.isNull(userGroup)) {
 				res.send({ success: true, redirect: true, url: "/Authentication/SelectUsersGroups" })
 				return
 			}
@@ -117,13 +112,11 @@ export class FrontendController {
 			const languageCode = req.language !== undefined && req.language.code === "en" ? "en" : "es"
 			const frontendRepository = new FrontendRepository({
 				context:
-					company == null
-						? req.context.db("IsavConfig")
-						: req.context.db(req.session.data.company.CompanyID.toString()),
+					company == null ? req.context.db("IsavConfig") : req.context.db(sessionData.company.CompanyID.toString()),
 				contextConfig: req.context.db("IsavConfig"),
 				entity: screen,
 				languageCode,
-				sessionData: req.session.data,
+				sessionData: sessionData,
 			})
 
 			const data = await frontendRepository.getDataScreen({ entity: screen })
