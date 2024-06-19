@@ -1,12 +1,13 @@
 import { Router } from "express"
+import { ApiController } from "../controllers/ApiController.js"
 import { BaseController } from "../controllers/BaseController.js"
 
 export const authenticationRouters = Router()
 
 // Authentication
-authenticationRouters.get("/", BaseController.SignInSignUp)
-authenticationRouters.get("/test", BaseController.ValidateSession, BaseController.Test)
+authenticationRouters.get("/", ApiController.signInSignUp)
+authenticationRouters.get("/test", BaseController.validateSession, ApiController.test)
 
-authenticationRouters.get("/SelectCompany", BaseController.SelectCompany)
-authenticationRouters.get("/CreateCompany", BaseController.CreateCompany)
-authenticationRouters.get("/SelectUsersGroups", BaseController.SelectUsersGroups)
+authenticationRouters.get("/SelectCompany", ApiController.selectCompany)
+authenticationRouters.get("/CreateCompany", ApiController.createCompany)
+authenticationRouters.get("/SelectUsersGroups", ApiController.selectUsersGroups)
