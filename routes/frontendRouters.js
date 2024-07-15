@@ -1,11 +1,16 @@
 import { Router } from "express"
 import { FrontendController } from "../controllers/FrontendController.js"
 
-export const frontendRouters = Router()
+export const FrontendRouters = Router()
 
-frontendRouters.get("/:screen/DataScreen", FrontendController.dataScreen)
-frontendRouters.get("/Companies/Create", FrontendController.createCompany)
-frontendRouters.get("/:screen/Create", FrontendController.create)
-frontendRouters.get("/:screen", FrontendController.list)
-frontendRouters.get("/", FrontendController.home)
-frontendRouters.get("/RenameProperty", FrontendController.getFieldsProperties)
+FrontendRouters.get("/Authentication", FrontendController.signInSignUp)
+FrontendRouters.get("/SelectCompany", FrontendController.validateSession, FrontendController.selectCompany)
+FrontendRouters.get("/CreateCompany", FrontendController.validateSession, FrontendController.createCompany)
+FrontendRouters.get("/SelectUsersGroups", FrontendController.validateSession, FrontendController.selectUsersGroups)
+
+FrontendRouters.get("/Companies/Create", FrontendController.validateSession, FrontendController.createCompany)
+FrontendRouters.get("/RenameProperty", FrontendController.validateSession, FrontendController.getFieldsProperties)
+FrontendRouters.get("/:screen/DataScreen", FrontendController.validateSession, FrontendController.dataScreen)
+FrontendRouters.get("/:screen/Create", FrontendController.validateSession, FrontendController.create)
+FrontendRouters.get("/:screen", FrontendController.validateSession, FrontendController.list)
+FrontendRouters.get("/", FrontendController.validateSession, FrontendController.home)

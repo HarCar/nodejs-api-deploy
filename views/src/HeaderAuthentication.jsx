@@ -3,6 +3,7 @@ import MenuTheme from './CustomComponents/MenuTheme.jsx';
 
 const HeaderAuthentication = () => {
     document.documentElement.lang = localStorage.i18nextLng;
+    console.log('HeaderAuthentication')
 
     return (
         <header className="flex fixed justify-between items-center w-full sm:px-4 lg:max-w-7xl h-20 backdrop-blur-md z-10" >

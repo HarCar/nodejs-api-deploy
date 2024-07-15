@@ -51,7 +51,7 @@ const MenuUserLoged = (props) => {
           </div>
           <ul className="py-2 text-sm text-gray-700 dark:text-gray-400">
             <li>
-              <a href="/Authentication/SelectUsersGroups" className="flex items-center gap-x-1.5 block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+              <a href="/SelectUsersGroups" className="flex items-center gap-x-1.5 block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                 <SvgIconsChangeCircleOutline />
                 {t('security.changeUserGroup')}
               </a>
@@ -59,6 +59,9 @@ const MenuUserLoged = (props) => {
           </ul>
           <div className="py-1">
             <button onClick={async () => {
+              if (localStorage.token !== undefined)
+                localStorage.token = null
+
               await FetchPOST({
                 screen: 'SignOut',
                 urlParameters: ''

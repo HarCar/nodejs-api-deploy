@@ -11,11 +11,9 @@ const FetchGET = async ({ screen, urlParameters, useApi = true }) => {
             'Content-Type': 'application/json',
             'Accept-Language': localStorage.i18nextLng,
         }
-        if (localStorage.token !== undefined) {
+        if (localStorage.token !== undefined && localStorage.token !== null) {
             header['Authorization'] = `Bearer ${localStorage.token}`
         }
-
-        console.log(header)
 
         const response = await fetch(`${baseUrl}${screen}${urlParameters}`, {
             method: 'GET',
@@ -26,8 +24,13 @@ const FetchGET = async ({ screen, urlParameters, useApi = true }) => {
             const customResponse = await response.json()
             throw new Error(customResponse.message);
         }
+
+        const customResponse = await response.json()
+        if (customResponse.redirect) {
+            location.href = customResponse.url
+        }
+
         Load(false)
-        const customResponse = await response.json();
         return customResponse.data
     } catch (error) {
         Load(false)

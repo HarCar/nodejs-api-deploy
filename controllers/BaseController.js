@@ -23,6 +23,7 @@ export class BaseController {
 		const authHeader = req.headers["authorization"]
 		const token = authHeader && authHeader.split(" ")[1]
 		let session = req.session.data
+		console.log(req.originalUrl, "GetSessionData", session)
 		if (!Helpers.isNull(token) && Helpers.isNull(session)) {
 			try {
 				session = await verifyAsync(token, "tu_secreto")
@@ -38,32 +39,25 @@ export class BaseController {
 		const sessionData = new SessionData()
 		sessionData.set(SessionData.propertyEmailVerified, session.emailVerified)
 		sessionData.set(SessionData.propertyEmail, session.email)
+		sessionData.set(SessionData.propertyName, session.name)
 		sessionData.set(SessionData.propertyUid, session.uid)
-		sessionData.set(SessionData.propertyLastLoginDateTime, session.lastLoginDateTime)
-		sessionData.set(SessionData.propertyViews, session.views)
 		sessionData.set(SessionData.propertyCompany, session.company)
 		sessionData.set(SessionData.propertyUserGroup, session.userGroup)
 
 		return sessionData
 	}
 
-	static getContexts(req) {
-		const sessionData = BaseController.GetSessionData(req)
-
+	static getContexts(req, sessionData) {
 		if (Helpers.isNull(sessionData)) {
-			return { context: req.context.db("IsavConfig"), contextConfig: null }
-		}
-
-		if (Helpers.isNull(sessionData)) {
-			return { context: req.context.db("IsavConfig"), contextConfig: null }
+			return { context: null, contextConfig: req.context.db("IsavConfig") }
 		}
 
 		if (Helpers.isNull(sessionData.company)) {
-			return { context: req.context.db("IsavConfig"), contextConfig: null }
+			return { context: null, contextConfig: req.context.db("IsavConfig") }
 		}
 
 		return {
-			context: req.context.db(sessionData.company.CompanyID.toString()),
+			context: req.context.db(sessionData.company._id.toString()),
 			contextConfig: req.context.db("IsavConfig"),
 		}
 	}

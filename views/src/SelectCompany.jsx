@@ -23,16 +23,10 @@ const Company = ({ id, name, country }) => {
         <path className='dark:fill-gray-400' d="M896 868.3V385H575.9V111.6H128v756.7H64v44h896v-44h-64z m-364.1 0H172V155.6h359.9v712.7z m320.1-1.5H575.8V429H852v437.8z" fill="#39393A" />
       </svg>
       <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">{name}</h5>
-      <p class="mb-3 font-normal text-gray-500 dark:text-gray-400">{country}</p>
+      <p className="mb-3 font-normal text-gray-500 dark:text-gray-400">{country}</p>
     </button>
   );
 };
-
-Company.propTypes = {
-  id: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  country: PropTypes.string.isRequired
-}
 
 const SelectCompany = () => {
   const { t } = useTranslation();

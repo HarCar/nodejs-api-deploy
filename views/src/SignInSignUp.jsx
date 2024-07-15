@@ -63,7 +63,26 @@ const SignInSignUp = () => {
                         <h1 className="block text-3xl my-[0.67em] mx-0 font-bold isolate text-neutral-950">{t('security.signIn')}</h1>
                         <input className="bg-gray-200 border-none p-3 mb-2 w-full py-1 px-2 text-neutral-800" name="email" type="email" placeholder={`${t('security.email')}`} />
                         <input className="bg-gray-200 border-none p-3 mb-2 w-full py-1 px-2 text-neutral-800" name="password" type="password" placeholder={`${t('security.password')}`} />
-                        <a className="text-gray-800 text-base no-underline my-4">{`${t('security.forgotYourPassword')}`}</a>
+                        <a
+                            className="cursor-pointer text-gray-800 text-base no-underline my-4"
+                            onClick={
+                                async (e) => {
+                                    e.preventDefault()
+
+                                    const parameters = {}
+                                    const formulario = document.getElementById("form-sign-in")
+                                    const datosFormulario = new FormData(formulario)
+
+                                    datosFormulario.forEach((valor, clave) => {
+                                        parameters[clave] = valor
+                                    })
+
+                                    var response = await FetchPOST({ screen: 'PasswordReset', body: JSON.stringify(parameters), urlParameters: '' })
+                                    console.log(response)
+                                }}
+                        >
+                            {`${t('security.forgotYourPassword')}`}
+                        </a>
                         <button
                             className="rounded-2xl border border-[#FF4B2B] bg-[#FF4B2B] text-white text-xs font-bold py-3 px-11 tracking-widest uppercase transition-transform duration-75 ease-in"
                             onClick={

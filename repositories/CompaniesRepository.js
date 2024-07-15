@@ -29,33 +29,27 @@ export class CompaniesRepository {
 
 	async insert({ objet }) {
 		await this.setFieldsProperties()
-
 		await this.setScheme(objet)
 		const result = ValidateScheme({ objet, scheme: this._scheme })
 		if (!result.success) {
 			throw new Error(result.message)
 		}
-
 		// / /TODO mejorar esto, debe ser automatico al crear el esquema de zod///
 		const fields = Object.keys(result.data)
 		for (const field of fields) {
 			if (field === "_id") {
 				continue
 			}
-
 			const fieldProperties = FieldProperties({
 				fieldsProperties: this._FieldsProperties,
 				fieldName: field,
 			})
-
 			if (Helpers.isNull(fieldProperties)) {
 				continue
 			}
-
 			if (fieldProperties.Type !== "ObjectId") {
 				continue
 			}
-
 			// result.data[field] = new ObjectId(result.data[field])
 			result.data[field] = new ObjectId(`${result.data[field]}`)
 		}

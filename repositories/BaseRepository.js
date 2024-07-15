@@ -39,14 +39,6 @@ export class BaseRepository {
 		// return collectionNames
 	}
 
-	async getFieldsPropertiesForCompany() {
-		const data = await this._contextConfig
-			.collection(Constants.FIELDS_PROPERTIES)
-			.find({ Screens: "Companies" })
-			.toArray()
-		return data
-	}
-
 	async get({ queryParams, entity = "" }) {
 		const filters = Helpers.createFiltersFromQueryParams(queryParams)
 		await this.setFieldsProperties()
@@ -131,10 +123,16 @@ export class BaseRepository {
 		return Object.values(dataFilter)
 	}
 
-	async find({ id }) {
+	async find({ id, entity = "" }) {
 		await this.setFieldsProperties()
 		const _id = new ObjectId(`${id}`)
-		const data = await this._entity.findOne({ _id })
+		let data = null
+
+		if (!Helpers.isNullOrEmpty(entity)) {
+			data = await this.getContext().collection(entity).findOne({ _id })
+		} else {
+			data = await this._entity.findOne({ _id })
+		}
 
 		if (!Helpers.isNull(data)) {
 			const fields = Object.keys(data)

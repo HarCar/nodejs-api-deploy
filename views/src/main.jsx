@@ -11,6 +11,7 @@ import List from './List.jsx'
 import SignInSignUp from './SignInSignUp.jsx'
 import HeaderAuthentication from './HeaderAuthentication.jsx'
 import { DataProvider } from './DataContext';
+import './fetch-interceptor.js'; // Importa la configuración del interceptor
 
 const Home = () => <div>Home</div>;
 const NotFound = () => <div>NotFound...</div>;
@@ -23,8 +24,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Routes>
           {/* Rutas que no necesitan DataProvider */}
           <Route path='/Authentication' element={<><HeaderAuthentication /><SignInSignUp /></>} />
-          <Route path='/Authentication/SelectCompany' element={<SelectCompany />} />
-          <Route path='/Authentication/SelectUsersGroups' element={<div>Select group</div>} />
+          <Route path='/SelectCompany' element={<SelectCompany />} />
+          <Route path='/SelectUsersGroups' element={<div>Select group</div>} />
 
           {/* Rutas que necesitan DataProvider */}
           <Route path='/*' element={

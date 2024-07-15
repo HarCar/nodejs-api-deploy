@@ -10,27 +10,18 @@ import {
 	SignInWithEmailAndPassword,
 	SetMessageByErrorCode,
 } from "../tools/authenticationFirebase.js"
-import path from "node:path"
 import Helpers from "../tools/Helpers.js"
 
 export class ApiController {
 	static async get(req, res, next) {
 		const { screen } = req.params
-		const { context, contextConfig } = BaseController.getContexts(req)
 		const languageCode = req.language !== undefined && req.language.code === "en" ? "en" : "es"
-		const repository = new BaseRepository({ context, contextConfig, languageCode, entity: screen, sessionData: null })
 
 		try {
-			let data = null
-			const { Screens } = req.query
-
-			if (screen === "screens") {
-				data = await repository.getScreens()
-			} else if (screen === "FieldsProperties" && Screens === "Companies") {
-				data = await repository.getFieldsPropertiesForCompany()
-			} else {
-				data = await repository.get({ queryParams: req.query })
-			}
+			const sessionData = await BaseController.GetSessionData(req)
+			const { context, contextConfig } = BaseController.getContexts(req, sessionData)
+			const repository = new BaseRepository({ context, contextConfig, languageCode, entity: screen, sessionData: null })
+			const data = await repository.get({ queryParams: req.query })
 
 			res.json({
 				success: true,
@@ -44,12 +35,13 @@ export class ApiController {
 
 	static async find(req, res, next) {
 		const { screen } = req.params
-		const { context, contextConfig } = BaseController.getContexts(req)
+		const { id } = req.params
 		const languageCode = req.language !== undefined && req.language.code === "en" ? "en" : "es"
-		const repository = new BaseRepository({ context, contextConfig, languageCode, entity: screen, sessionData: null })
 
 		try {
-			const { id } = req.params
+			const sessionData = await BaseController.GetSessionData(req)
+			const { context, contextConfig } = BaseController.getContexts(req, sessionData)
+			const repository = new BaseRepository({ context, contextConfig, languageCode, entity: screen, sessionData: null })
 			const data = await repository.find({ id })
 
 			res.json({
@@ -64,12 +56,13 @@ export class ApiController {
 
 	static async findByName(req, res, next) {
 		const { screen } = req.params
-		const { context, contextConfig } = BaseController.getContexts(req)
+		const { name } = req.params
 		const languageCode = req.language !== undefined && req.language.code === "en" ? "en" : "es"
-		const repository = new BaseRepository({ context, contextConfig, languageCode, entity: screen, sessionData: null })
 
 		try {
-			const { name } = req.params
+			const sessionData = await BaseController.GetSessionData(req)
+			const { context, contextConfig } = BaseController.getContexts(req, sessionData)
+			const repository = new BaseRepository({ context, contextConfig, languageCode, entity: screen, sessionData: null })
 			const data = await repository.findByName({ name })
 
 			res.json({
@@ -92,23 +85,31 @@ export class ApiController {
 				throw new Error("No puedes crear mas de una empresa al mismo tiempo")
 			}
 
-			const companiesRepository = new CompaniesRepository({
+			const sessionData = await BaseController.GetSessionData(req)
+			let companiesRepository = new CompaniesRepository({
 				context: null,
 				contextConfig,
 				languageCode,
 				entity: "Companies",
-				sessionData: BaseController.GetSessionData(req),
+				sessionData: sessionData,
 			})
 			const data = await companiesRepository.insert({ objet: req.body })
-			companiesRepository["_context"] = req.context.db(data._id.toString())
+
+			companiesRepository = new CompaniesRepository({
+				context: req.context.db(data._id.toString()),
+				contextConfig,
+				languageCode,
+				entity: "Companies",
+				sessionData: sessionData,
+			})
 			companiesRepository.completeSetup({ company: data })
 
 			res.json({
 				success: true,
 				message: "Registro gurdado",
-				data,
+				data: data,
 				redirect: true,
-				url: "/Authentication/SelectCompany",
+				url: "/SelectCompany",
 			})
 		} catch (error) {
 			next(error)
@@ -117,44 +118,24 @@ export class ApiController {
 
 	static async post(req, res, next) {
 		const { screen } = req.params
-		const { context, contextConfig } = BaseController.getContexts(req)
 		const languageCode = req.language !== undefined && req.language.code === "en" ? "en" : "es"
-		const repository = new BaseRepository({
-			context,
-			contextConfig,
-			languageCode,
-			entity: screen,
-			sessionData: await BaseController.GetSessionData(req),
-		})
 		try {
-			if (screen === "Companies" && Array.isArray(req.body)) {
-				throw new Error("No puedes crear mas de una empresa al mismo tiempo")
-			}
+			const sessionData = await BaseController.GetSessionData(req)
+			const { context, contextConfig } = BaseController.getContexts(req, sessionData)
+			const repository = new BaseRepository({
+				context,
+				contextConfig,
+				languageCode,
+				entity: screen,
+				sessionData: sessionData,
+			})
 
 			const data = await repository.insert({ objet: req.body })
-
-			let redirect = false
-			let url = ""
-
-			if (screen === "Companies") {
-				const companiesRepository = new CompaniesRepository({
-					context: req.context.db(data._id),
-					contextConfig,
-					languageCode,
-					entity: "Companies",
-					sessionData: BaseController.GetSessionData(req),
-				})
-				await companiesRepository.completeSetup({ company: data })
-				redirect = true
-				url = "/Authentication/SelectCompany"
-			}
 
 			res.json({
 				success: true,
 				message: "Registro gurdado",
 				data,
-				redirect,
-				url,
 			})
 		} catch (error) {
 			next(error)
@@ -163,12 +144,13 @@ export class ApiController {
 
 	static async patch(req, res, next) {
 		const { screen } = req.params
-		const { context, contextConfig } = BaseController.getContexts(req)
+		const { id } = req.params
 		const languageCode = req.language !== undefined && req.language.code === "en" ? "en" : "es"
-		const repository = new BaseRepository({ context, contextConfig, languageCode, entity: screen, sessionData: null })
 
 		try {
-			const { id } = req.params
+			const sessionData = await BaseController.GetSessionData(req)
+			const { context, contextConfig } = BaseController.getContexts(req, sessionData)
+			const repository = new BaseRepository({ context, contextConfig, languageCode, entity: screen, sessionData: null })
 
 			const result = await repository.update({ id, objet: req.body })
 
@@ -184,12 +166,13 @@ export class ApiController {
 
 	static async delete(req, res, next) {
 		const { screen } = req.params
-		const { context, contextConfig } = BaseController.getContexts(req)
+		const { id } = req.params
 		const languageCode = req.language !== undefined && req.language.code === "en" ? "en" : "es"
-		const repository = new BaseRepository({ context, contextConfig, languageCode, entity: screen, sessionData: null })
 
 		try {
-			const { id } = req.params
+			const sessionData = await BaseController.GetSessionData(req, sessionData)
+			const { context, contextConfig } = BaseController.getContexts(req, sessionData)
+			const repository = new BaseRepository({ context, contextConfig, languageCode, entity: screen, sessionData: null })
 			const result = await repository.delete({ id })
 
 			res.json({
@@ -225,18 +208,19 @@ export class ApiController {
 
 	// Authentication
 	static async usersCompanies(req, res, next) {
-		const { context, contextConfig } = BaseController.getContexts(req)
 		const languageCode = req.language !== undefined && req.language.code === "en" ? "en" : "es"
-		const repository = new BaseRepository({
-			context,
-			contextConfig,
-			languageCode,
-			entity: "Users_Companies",
-			sessionData: null,
-		})
 
 		try {
-			const sessionData = BaseController.GetSessionData(req)
+			const sessionData = await BaseController.GetSessionData(req)
+			const { context, contextConfig } = BaseController.getContexts(req, sessionData)
+			const repository = new BaseRepository({
+				context,
+				contextConfig,
+				languageCode,
+				entity: "Users_Companies",
+				sessionData: sessionData,
+			})
+
 			const data = await repository.get({ queryParams: { uid: sessionData.uid } })
 
 			res.json({
@@ -249,32 +233,15 @@ export class ApiController {
 		}
 	}
 
-	static async signInSignUp(req, res, next) {
-		console.log("SignInSignUp")
-		try {
-			res.sendFile(path.join(path.resolve(), "views", "dist", "index.html"))
-		} catch (error) {
-			next(error)
-		}
-	}
-
-	static async selectCompany(req, res, next) {
-		try {
-			res.sendFile(path.join(path.resolve(), "views", "dist", "index.html"))
-		} catch (error) {
-			next(error)
-		}
-	}
-
 	static async setCompany(req, res, next) {
+		const { ID } = req.params
+		const languageCode = req.language !== undefined && req.language.code === "en" ? "en" : "es"
+		const contextConfig = req.context.db("IsavConfig")
+		const context = req.context.db(ID)
+
 		try {
 			const response = { success: true }
-			const { ID } = req.params
-			const languageCode = req.language !== undefined && req.language.code === "en" ? "en" : "es"
-			const contextConfig = req.context.db("IsavConfig")
-			const context = req.context.db(ID)
-			const sessionData = BaseController.GetSessionData(req)
-
+			const sessionData = await BaseController.GetSessionData(req)
 			let baseRepository = new BaseRepository({
 				context,
 				contextConfig,
@@ -282,6 +249,7 @@ export class ApiController {
 				entity: "Companies",
 				sessionData: sessionData,
 			})
+
 			const company = await baseRepository.find({ id: ID })
 			sessionData.set(SessionData.propertyCompany, company)
 			const uid = sessionData.uid
@@ -300,28 +268,12 @@ export class ApiController {
 				response.url = "/"
 			} else {
 				response.redirect = true
-				response.url = "/Authentication/SelectUsersGroups"
+				response.url = "/SelectUsersGroups"
 			}
 
 			response.token = jwt.sign({ ...sessionData }, "tu_secreto", { expiresIn: "1h" })
 			req.session.data = sessionData
 			res.send(response)
-		} catch (error) {
-			next(error)
-		}
-	}
-
-	static async createCompany(req, res, next) {
-		try {
-			res.sendFile(path.join(path.resolve(), "views", "dist", "index.html"))
-		} catch (error) {
-			next(error)
-		}
-	}
-
-	static async selectUsersGroups(req, res, next) {
-		try {
-			res.sendFile(path.join(path.resolve(), "views", "dist", "index.html"))
 		} catch (error) {
 			next(error)
 		}
@@ -384,12 +336,17 @@ export class ApiController {
 					userCompanies = userCompanies.filter((map) => map.CompanyID.toString() === companyID)
 				}
 
-				if (!Helpers.any(userCompanies)) {
+				if (!Helpers.isNullOrEmpty(companyID) && !Helpers.any(userCompanies)) {
 					throw new Error(`No se encontro la emprea con ID ${companyID}`)
 				}
 
 				if (userCompanies.length === 1) {
-					sessionData.set(SessionData.propertyCompany, userCompanies[0])
+					const company = await baseRepository.find({ id: userCompanies[0].CompanyID.toString(), entity: "Companies" })
+					if (company == null) {
+						throw new Error(`No se encontro la emprea con ID ${userCompanies[0].CompanyID.toString()}`)
+					}
+
+					sessionData.set(SessionData.propertyCompany, company)
 					baseRepository = new BaseRepository({
 						context: req.context.db(userCompanies[0].CompanyID.toString()),
 						contextConfig,
@@ -398,26 +355,34 @@ export class ApiController {
 						sessionData: sessionData,
 					})
 
-					let usersGroups = await baseRepository.get({ queryParams: null })
+					let usersGroups = await baseRepository.get({ queryParams: { uid: sessionData.get(SessionData.propertyUid) } })
 
 					if (!Helpers.isNullOrEmpty(userGroupID) && Helpers.any(usersGroups)) {
 						usersGroups = usersGroups.filter((map) => map.UserGroupID.toString() === userGroupID)
 					}
-					if (!Helpers.any(usersGroups)) {
+					if (!Helpers.isNullOrEmpty(userGroupID) && !Helpers.any(usersGroups)) {
 						throw new Error(`No se encontro la grupo de usuario con ID ${userGroupID}`)
 					}
 
 					if (usersGroups.length === 1) {
-						sessionData.set(SessionData.propertyUserGroup, usersGroups[0])
+						const userGroup = await baseRepository.find({
+							id: usersGroups[0].UserGroupID.toString(),
+							entity: "UsersGroups",
+						})
+						if (userGroup == null) {
+							throw new Error(`No se encontro grupo de usuario con ID ${usersGroups[0].UserGroupID.toString()}`)
+						}
+
+						sessionData.set(SessionData.propertyUserGroup, userGroup)
 						response.redirect = true
 						response.url = "/"
 					} else {
 						response.redirect = true
-						response.url = "/Authentication/SelectUsersGroups"
+						response.url = "/SelectUsersGroups"
 					}
 				} else {
 					response.redirect = true
-					response.url = "/Authentication/SelectCompany"
+					response.url = "/SelectCompany"
 				}
 			} else {
 				response.message = `${t(languageCode, "verification_sent_to")} ${email}`

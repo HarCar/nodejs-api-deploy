@@ -5,6 +5,7 @@ import MainMenu from './CustomComponents/MainMenu'
 import { useData } from './DataContext';
 
 const Header = () => {
+    console.log('Header')
     const dataScreen = useData()
     document.documentElement.lang = localStorage.i18nextLng;
 

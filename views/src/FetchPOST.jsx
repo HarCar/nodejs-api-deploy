@@ -20,9 +20,8 @@ const FetchPOST = async ({ screen, body, urlParameters }) => {
             throw new Error(customResponse.message);
         }
 
-        Load(false)
         const customResponse = await response.json();
-        if (screen === 'SignIn') {
+        if (customResponse.token !== undefined) {
             localStorage.token = customResponse.token
         }
         if (customResponse.message !== undefined && customResponse.message.length !== 0) {
@@ -31,6 +30,8 @@ const FetchPOST = async ({ screen, body, urlParameters }) => {
         if (customResponse.redirect) {
             location.href = customResponse.url
         }
+
+        Load(false)
         return customResponse.data
     } catch (error) {
         Load(false)

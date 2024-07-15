@@ -5,18 +5,29 @@ import Helpers from "../tools/Helpers.js"
 import { BaseController } from "./BaseController.js"
 
 export class FrontendController {
+	static async validateSession(req, res, next) {
+		const sessionData = await BaseController.GetSessionData(req)
+		if (Helpers.isNull(sessionData)) {
+			// return res.redirect("/Authentication")
+			return res.status(401).json({ redirected: true, url: "/Authentication" })
+		} else {
+			next()
+		}
+	}
+
 	static async home(req, res, next) {
+		console.log("home")
 		try {
 			const sessionData = await BaseController.GetSessionData(req)
 			const company = sessionData?.company ?? null
-			const userGroup = sessionData.userGroup ?? null
+			const userGroup = sessionData?.userGroup ?? null
 
 			if (sessionData == null) {
 				return res.redirect("/Authentication")
 			} else if (company === null) {
-				return res.redirect("/Authentication/SelectCompany")
+				return res.redirect("/SelectCompany")
 			} else if (userGroup === null) {
-				return res.redirect("/Authentication/SelectUsersGroups")
+				return res.redirect("/SelectUsersGroups")
 			} else {
 				res.sendFile(path.join(path.resolve(), "views", "dist", "index.html"))
 			}
@@ -31,16 +42,16 @@ export class FrontendController {
 			const { screen } = req.params
 			const sessionData = await BaseController.GetSessionData(req)
 			const company = sessionData?.company ?? null
-			const userGroup = sessionData.userGroup ?? null
+			const userGroup = sessionData?.userGroup ?? null
 
 			if (Helpers.isNull(sessionData)) {
 				return res.redirect("/Authentication")
 			}
 			if (screen + "/Create" !== "Companies/Create" && Helpers.isNull(company)) {
-				return res.redirect("/Authentication/SelectCompany")
+				return res.redirect("/SelectCompany")
 			}
 			if (screen + "/Create" !== "Companies/Create" && Helpers.isNull(userGroup)) {
-				return res.redirect("/Authentication/SelectUsersGroups")
+				return res.redirect("/SelectUsersGroups")
 			}
 
 			res.sendFile(path.join(path.resolve(), "views", "dist", "index.html"))
@@ -50,22 +61,20 @@ export class FrontendController {
 	}
 
 	static async create(req, res, next) {
-		console.log("create", req.session.data)
-
 		try {
 			const { screen } = req.params
 			const sessionData = await BaseController.GetSessionData(req)
 			const company = sessionData?.company ?? null
-			const userGroup = sessionData.userGroup ?? null
+			const userGroup = sessionData?.userGroup ?? null
 
 			if (Helpers.isNull(sessionData)) {
 				return res.redirect("/Authentication")
 			}
 			if (screen + "/Create" !== "Companies/Create" && Helpers.isNull(company)) {
-				return res.redirect("/Authentication/SelectCompany")
+				return res.redirect("/SelectCompany")
 			}
 			if (screen + "/Create" !== "Companies/Create" && Helpers.isNull(userGroup)) {
-				return res.redirect("/Authentication/SelectUsersGroups")
+				return res.redirect("/SelectUsersGroups")
 			}
 
 			res.sendFile(path.join(path.resolve(), "views", "dist", "index.html"))
@@ -75,8 +84,6 @@ export class FrontendController {
 	}
 
 	static async createCompany(req, res, next) {
-		console.log("createCompany", req.session.data.uid)
-
 		try {
 			const uid = req?.session?.data?.uid
 			if (Helpers.isNullOrEmpty(uid)) {
@@ -90,29 +97,27 @@ export class FrontendController {
 	}
 
 	static async dataScreen(req, res, next) {
+		const { screen } = req.params
+		const languageCode = req.language !== undefined && req.language.code === "en" ? "en" : "es"
 		try {
-			const { screen } = req.params
 			const sessionData = await BaseController.GetSessionData(req)
 			const company = sessionData?.company ?? null
-			const userGroup = sessionData.userGroup ?? null
+			const userGroup = sessionData?.userGroup ?? null
 
 			if (Helpers.isNull(sessionData)) {
 				res.send({ success: true, redirect: true, url: "/Authentication" })
 				return
 			}
 			if (screen + "/Create" !== "Companies/Create" && Helpers.isNull(company)) {
-				res.send({ success: true, redirect: true, url: "/Authentication/SelectCompany" })
+				res.send({ success: true, redirect: true, url: "/SelectCompany" })
 				return
 			}
 			if (screen + "/Create" !== "Companies/Create" && Helpers.isNull(userGroup)) {
-				res.send({ success: true, redirect: true, url: "/Authentication/SelectUsersGroups" })
+				res.send({ success: true, redirect: true, url: "/SelectUsersGroups" })
 				return
 			}
-
-			const languageCode = req.language !== undefined && req.language.code === "en" ? "en" : "es"
 			const frontendRepository = new FrontendRepository({
-				context:
-					company == null ? req.context.db("IsavConfig") : req.context.db(sessionData.company.CompanyID.toString()),
+				context: company == null ? req.context.db("IsavConfig") : req.context.db(sessionData.company._id.toString()),
 				contextConfig: req.context.db("IsavConfig"),
 				entity: screen,
 				languageCode,
@@ -127,9 +132,8 @@ export class FrontendController {
 	}
 
 	static async getFieldsProperties(req, res, next) {
-		const { context } = FrontendRepository.getContexts(req)
-
 		try {
+			const { context } = FrontendRepository.getContexts(req)
 			const data = context.collection(Constants.ENTITY_FIELDS_PROPERTIES).find({}).toArray()
 
 			res.json({
@@ -137,6 +141,31 @@ export class FrontendController {
 				message: null,
 				data,
 			})
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	static async signInSignUp(req, res, next) {
+		console.log("SignInSignUp1111")
+		try {
+			res.sendFile(path.join(path.resolve(), "views", "dist", "index.html"))
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	static async selectCompany(req, res, next) {
+		try {
+			res.sendFile(path.join(path.resolve(), "views", "dist", "index.html"))
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	static async selectUsersGroups(req, res, next) {
+		try {
+			res.sendFile(path.join(path.resolve(), "views", "dist", "index.html"))
 		} catch (error) {
 			next(error)
 		}

@@ -4,7 +4,7 @@ import path from "path"
 import acceptLanguage from "accept-language-parser"
 import session from "express-session"
 import { GetStore, Context } from "./models/Context.js"
-import { Routes } from "./routes/routes.js"
+import { Routes } from "./routes/Routes.js"
 
 const app = express()
 const context = new Context()

@@ -38,7 +38,12 @@ const DropdownSearch = ({ properties }) => {
 
   const fetchDropdownItems = async (searchText) => {
     try {
-      const filtereddata = properties.DataSource.filter(map => map.Caption_en.toLowerCase().includes(searchText.toLowerCase()) || map.Caption_es.toLowerCase().includes(searchText.toLowerCase()));
+      const filtereddata = properties.DataSource.filter(map =>
+        (map.Caption_en === undefined ? '' : map.Caption_en).toLowerCase().includes(searchText.toLowerCase())
+        || (map.Caption_es === undefined ? '' : map.Caption_es).toLowerCase().includes(searchText.toLowerCase())
+        || (map.Name === undefined ? '' : map.Name).toLowerCase().includes(searchText.toLowerCase())
+        || (map.Code === undefined ? '' : map.Code).toLowerCase().includes(searchText.toLowerCase())
+      );
       setDropdownItems(filtereddata)
     } catch (error) {
       console.error('Error fetching dropdown items:', error);

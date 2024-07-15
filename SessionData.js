@@ -3,7 +3,6 @@ export class SessionData {
 	static propertyEmail = "email"
 	static propertyName = "name"
 	static propertyUid = "uid"
-	static propertyLastLoginDateTime = "lastLoginDateTime"
 
 	static propertyCompany = "company"
 	static propertyUserGroup = "userGroup"

@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 const DataContext = createContext();
 
 export const DataProvider = ({ children }) => {
+    console.log('DataProvider')
     const params = useParams();
     const screen = params["*"] ? params["*"].split('/')[0] : null;
     const [data, setData] = useState(null);

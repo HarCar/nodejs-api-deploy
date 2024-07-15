@@ -16,12 +16,6 @@ export class FrontendRepository {
 		}
 	}
 
-	async getScreens() {
-		// const collections = await this.getContext().listCollections().toArray()
-		// const collectionNames = collections.map((collection) => collection.name)
-		// return collectionNames
-	}
-
 	async getFieldsPropertiesForCompany() {
 		const data = await this._contextConfig
 			.collection(Constants.ENTITY_FIELDS_PROPERTIES)
